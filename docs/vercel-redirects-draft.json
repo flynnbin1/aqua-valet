@@ -1,0 +1,32 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    { "source": "/sevices/car-valeting/", "destination": "/services/car-valeting/", "permanent": true },
+    { "source": "/sevices/car-wash/", "destination": "/services/car-wash/", "permanent": true },
+    { "source": "/sevices/pickup-mobile-valeting/", "destination": "/services/pickup-mobile-valeting/", "permanent": true },
+    { "source": "/product/valet-1/", "destination": "/packages/full-valet/", "permanent": true },
+    { "source": "/product/valet-2/", "destination": "/packages/full-valet/", "permanent": true },
+    { "source": "/product/valet-3/", "destination": "/packages/full-valet/", "permanent": true },
+    { "source": "/product/valet-4/", "destination": "/packages/full-valet/", "permanent": true },
+    { "source": "/product/valet-5/", "destination": "/packages/full-valet/", "permanent": true },
+    { "source": "/product/valet-6/", "destination": "/services/pickup-mobile-valeting/", "permanent": true },
+    { "source": "/product/exterior-wash/", "destination": "/services/car-wash/", "permanent": true },
+    { "source": "/product-category/valeting/", "destination": "/packages/", "permanent": true },
+    { "source": "/booking-approval/", "destination": "/book-now/", "permanent": true },
+    { "source": "/booking-cancellation/", "destination": "/book-now/", "permanent": true },
+    { "source": "/cart/", "destination": "/book-now/", "permanent": true },
+    { "source": "/checkout/", "destination": "/book-now/", "permanent": true },
+    { "source": "/my-account/", "destination": "/book-now/", "permanent": true },
+    { "source": "/sitemap.html", "destination": "/", "permanent": true }
+  ]
+}

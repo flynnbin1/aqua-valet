@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-IE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- AV monogram favicons (brand brief: favicon/social only) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="./favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./favicon-192.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="./favicon-192.png" />
+
+    <!-- SEO lockdown — preview stays hidden from Google. Remove ONLY when
+         Niall says "we are launching" (docs/seo-lockdown.md). -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!-- TODO: final SEO copy — title must evolve (not replace) the ranking
+         title "Aqua Valet Cork | Professional Car Valeting & Wash" -->
+    <title>Aqua Valet Cork | Professional Car Valeting, Deep Clean & Wash</title>
+    <!-- TODO: final SEO copy -->
+    <meta
+      name="description"
+      content="Cork's premium car valeting and deep clean specialists. Condition-based pricing — send photos on WhatsApp for an exact quote. New Park, Centre Park Road, Cork."
+    />
+
+    <!-- Montserrat is self-hosted and inlined in the stylesheet (see
+         src/fonts.css) — no third-party font requests, no FOUT. -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Aqua Valet",
+        "description": "Premium car valeting and deep clean specialists in Cork.",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "New Park, Centre Park Road",
+          "addressLocality": "Cork",
+          "addressCountry": "IE"
+        },
+        "openingHours": ["We 09:00-18:00", "Fr 09:00-18:00", "Sa 09:00-18:00"],
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "TODO",
+          "longitude": "TODO"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.1",
+          "reviewCount": "179"
+        },
+        "telephone": "+353834618226",
+        "sameAs": [
+          "https://www.facebook.com/aquavaletcork/",
+          "https://x.com/AquaValetCork"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

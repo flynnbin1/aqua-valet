@@ -1,0 +1,164 @@
+@import "./fonts.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* HSL values only — Tailwind adds the hsl() wrapper (see tailwind.config.ts).
+     Locked palette from aqua-valet-brand-brief.pdf:
+     bg #0A0E14 · surface #121722 · navy #0E2A47 · aqua #29ABE2 (sparingly:
+     CTAs/links) · aqua-lt #7FD4E8 · text #F2F6FA · muted #8A97A6 · line #162733 */
+  /* Light theme — the page is white. Decimals are deliberate: rounded HSL
+     drifts 1–2 points off the locked brand hexes. These round-trip exactly.
+     Every text pair here is verified against WCAG AA (see
+     docs/BRAND-GUIDELINES.md). */
+  --bg: 0 0% 100%; /* #FFFFFF page */
+  --surface: 210 44.4% 96.5%; /* #F2F6FA cards */
+  --text: 216 33.3% 5.9%; /* #0A0E14 — 19.3:1 on white */
+  --muted: 208.9 14% 37.8%; /* #53616E — 6.4:1 on white */
+  --stroke: 210 29.6% 89.4%; /* #DCE4EC hairlines */
+  --navy: 210.5 67.1% 16.7%; /* #0E2A47 */
+
+  /* Brand aqua stays exact. It is a FILL colour on light backgrounds
+     (ink on aqua = 7.4:1); for accent TEXT on white use --accent-strong,
+     because #29ABE2 on white is only 2.6:1. */
+  --accent: 197.8 76.1% 52.4%; /* #29ABE2 */
+  --accent-strong: 199.1 80.8% 32.7%; /* #106C97 — 5.8:1 on white */
+  --accent-light: 191.4 69.5% 70.4%; /* #7FD4E8 */
+
+  /* Permanently dark zones — header, footer, hero scrims. The logo art is
+     baked on black, so it only ever sits on these. */
+  --ink: 216 33.3% 5.9%; /* #0A0E14 */
+  --ink-surface: 221.2 30.8% 10.2%; /* #121722 */
+  --ink-text: 210 44.4% 96.5%; /* #F2F6FA */
+  --ink-muted: 212.1 13.6% 59.6%; /* #8A97A6 */
+  --ink-stroke: 204.8 39.7% 14.3%; /* #162733 */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-bg text-text-primary font-body antialiased;
+}
+
+@layer utilities {
+  /* Official brand gradient (brief: --grad) */
+  .aqua-gradient {
+    background: linear-gradient(90deg, #7fd4e8 0%, #29abe2 100%);
+  }
+
+  /* Subtle halftone dot overlay for result cards */
+  .halftone {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.6) 1px,
+      transparent 1px
+    );
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
+    opacity: 0.2;
+  }
+
+  /* Reviews carousel track — native scroll-snap drives swipe + arrow-button
+     scrolling, so the scrollbar itself is just visual noise. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Before/after comparison control. The input is invisible and stretched over
+   the image; it needs an explicit, generously sized thumb or there is nothing
+   to grab and only keyboard input works. */
+.ba-range {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ba-range::-webkit-slider-runnable-track {
+  height: 100%;
+}
+.ba-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 56px;
+  height: 100vh; /* clamped to the control height — full-height grab area */
+  cursor: ew-resize;
+  background: transparent;
+  border: 0;
+}
+.ba-range::-moz-range-thumb {
+  width: 56px;
+  height: 100vh;
+  cursor: ew-resize;
+  background: transparent;
+  border: 0;
+}
+.ba-range::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+
+@keyframes scroll-down {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+.animate-scroll-down {
+  animation: scroll-down 1.5s ease-in-out infinite;
+}
+
+@keyframes word-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-word-fade-in {
+  animation: word-fade-in 0.4s ease-out both;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}

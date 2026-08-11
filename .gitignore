@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output (Vite, not Next.js — this project has no .next/)
+dist/
+
+# Env files — never commit secrets
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Local tool caches
+.impeccable/
+
+# Scratch verification screenshots
+temp_screenshots/
+
+# Raw/unused source material — huge, not referenced by the built site
+brand_assets/
+range-rover-sport-tw/
+range-rover-sport-tw (1)/
+
+# Editor/OS
+.DS_Store
+Thumbs.db
