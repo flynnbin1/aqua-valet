@@ -163,17 +163,28 @@ export default function Hero() {
 
     // Frame 1 immediately (cache-hit — the eager <img> below already
     // fetched it); the rest sequentially once the page has loaded, so the
-    // sequence never competes with critical-path resources.
-    const loadRest = async () => {
-      for (let i = 1; i < FRAME_COUNT && !cancelled; i++) {
-        await loadFrame(i);
-      }
+    // sequence never competes with critical-path resources. EXCEPT: the
+    // first scroll/touch is intent to scrub — at that point the frames ARE
+    // the critical resource, so start at once instead of letting the scrub
+    // sit sticky on frame 1 while below-fold images finish. (LCP is
+    // unaffected: by the time the visitor interacts, the hero has painted.)
+    let restStarted = false;
+    const startRest = () => {
+      if (restStarted || cancelled) return;
+      restStarted = true;
+      (async () => {
+        for (let i = 1; i < FRAME_COUNT && !cancelled; i++) {
+          await loadFrame(i);
+        }
+      })();
     };
     loadFrame(0);
     if (document.readyState === "complete") {
-      loadRest();
+      startRest();
     } else {
-      window.addEventListener("load", loadRest, { once: true });
+      window.addEventListener("load", startRest, { once: true });
+      window.addEventListener("scroll", startRest, { once: true, passive: true });
+      window.addEventListener("touchstart", startRest, { once: true, passive: true });
     }
 
     const ctx = gsap.context(() => {
@@ -182,7 +193,11 @@ export default function Hero() {
         start: "top top",
         end: "+=200%",
         pin: true,
-        scrub: true,
+        // Small smoothing (not a hard link): with 72 discrete frames, a
+        // hard-linked scrub lands every wheel tick as a quantized step
+        // with zero easing — reads as "sticky". 0.5s of catch-up glides
+        // through the intermediate frames instead.
+        scrub: 0.5,
         onUpdate: (self) => {
           requested = Math.round(self.progress * (FRAME_COUNT - 1));
           renderRequested();
@@ -216,7 +231,9 @@ export default function Hero() {
     return () => {
       cancelled = true;
       window.removeEventListener("resize", fit);
-      window.removeEventListener("load", loadRest);
+      window.removeEventListener("load", startRest);
+      window.removeEventListener("scroll", startRest);
+      window.removeEventListener("touchstart", startRest);
       ctx.revert();
     };
   }, [mode]);
@@ -310,11 +327,14 @@ export default function Hero() {
             <h1 className="name-reveal font-display mt-5 max-w-3xl text-ink-text text-[2.6rem] font-extrabold leading-[0.95] tracking-tight sm:text-5xl md:mt-6 md:text-7xl lg:text-8xl">
               Your car, <em className="not-italic text-accent">restored</em>.
             </h1>
-            <p className="blur-in mt-5 max-w-md text-balance text-base text-ink-muted md:mt-6">
+            {/* Sub-copy + rating: desktop only (xl, matching the header's
+                hamburger cutover) — on phones/tablets they crowded the car
+                out of the clear band between headline and CTAs. */}
+            <p className="blur-in mt-5 hidden max-w-md text-balance text-base text-ink-muted md:mt-6 xl:block">
               Deep-clean specialists for people who care about their car. Eight
               years in Cork. By appointment only.
             </p>
-            <p className="blur-in mt-4 flex items-center gap-2 text-sm text-ink-muted">
+            <p className="blur-in mt-4 hidden items-center gap-2 text-sm text-ink-muted xl:flex">
               <span className="text-accent" aria-hidden="true">
                 ★★★★★
               </span>
