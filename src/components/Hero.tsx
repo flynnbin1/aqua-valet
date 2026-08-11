@@ -77,6 +77,24 @@ export default function Hero() {
     const video = videoRef.current;
     if (!video) return;
 
+    // iOS Safari (and some mobile browsers) won't reflect programmatic
+    // currentTime seeks on a video that's never actually played — the
+    // scrub silently does nothing, frozen on the poster. A muted,
+    // playsInline video is allowed to autoplay, so priming with an
+    // immediate play+pause "unlocks" seeking without the visitor ever
+    // seeing it move.
+    const primeVideo = () => {
+      const playAttempt = video.play();
+      if (playAttempt && typeof playAttempt.then === "function") {
+        playAttempt.then(() => video.pause()).catch(() => {});
+      }
+    };
+    if (video.readyState >= 2) {
+      primeVideo();
+    } else {
+      video.addEventListener("loadeddata", primeVideo, { once: true });
+    }
+
     // Coalesce seeks: while the decoder is mid-seek, remember only the
     // latest requested time and apply it when the current seek lands.
     const seekTo = (t: number) => {
@@ -136,6 +154,7 @@ export default function Hero() {
 
     return () => {
       video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("loadeddata", primeVideo);
       ctx.revert();
     };
   }, [mode]);
