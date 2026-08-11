@@ -71,6 +71,18 @@ body {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* Hero pin container height. `svh` isn't universally supported — a
+     browser that doesn't understand it drops the declaration entirely,
+     collapsing this element (and everything absolutely-positioned inside
+     it) to zero height. The vh line first guarantees a real height
+     everywhere; svh then overrides it where supported for the more
+     accurate small-viewport-height behaviour (avoids mobile browser
+     chrome resize jumps). */
+  .h-hero {
+    height: 100vh;
+    height: 100svh;
+  }
 }
 
 /* Before/after comparison control. The input is invisible and stretched over

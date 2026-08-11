@@ -57,10 +57,14 @@ export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const pendingSeek = useRef<number | null>(null);
-  const [mode, setMode] = useState<Mode>("desktop");
+  // Resolved synchronously (lazy initializer, runs once before first paint)
+  // rather than defaulting to "desktop" and correcting in an effect — the
+  // old default briefly rendered the desktop <video src> on every mobile
+  // visit, kicking off a request for the much larger desktop file that
+  // then had to be aborted once the real mode landed.
+  const [mode, setMode] = useState<Mode>(resolveMode);
 
   useEffect(() => {
-    setMode(resolveMode());
     const queries = [
       window.matchMedia("(min-width: 768px)"),
       window.matchMedia("(prefers-reduced-motion: reduce)"),
@@ -165,7 +169,7 @@ export default function Hero() {
       id="home"
       aria-label="Aqua Valet — premium valeting, Cork"
     >
-      <div ref={pinRef} className="relative h-svh overflow-hidden bg-black">
+      <div ref={pinRef} className="relative h-hero overflow-hidden bg-black">
         {/* Media sits BELOW the fixed header (md+) so the header never covers
             the car, and the crop is biased upward — the car's roof is at 20.5%
             of the frame and the tyres at 85.5%, so a centred crop on a short
