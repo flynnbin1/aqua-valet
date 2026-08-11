@@ -26,9 +26,14 @@ Read `docs/BUILD-BRIEF.md` and `docs/sitemap-plan.md` before doing anything.
 
 ## Hero section rules
 
-- The scroll-driven "dirty car gets cleaned" hero is **desktop only**.
-- Phones and slow connections get a lightweight fallback (static glossy hero image or simple before/after wipe). Test this fallback first, not last.
-- The hero must not push Lighthouse mobile performance below 90. If it does, simplify it until it doesn't.
+- The scroll-driven "dirty car gets cleaned" hero runs on desktop AND mobile,
+  as a WebP frame-sequence canvas scrub (scripts/gen-hero-frames.mjs) — NOT
+  video.currentTime seeking, which iOS throttles during touch scroll.
+- **Mobile is conditional: the scrub is allowed on mobile only while mobile
+  Lighthouse stays ≥90.** If it drops below, revert mobile to the static
+  fallback. Niall verifies via PageSpeed Insights after deploys.
+- The prefers-reduced-motion / save-data static path (clean-frame still, no
+  sequence downloaded) stays exactly as-is. Test it first, not last.
 - Hero is animated — skip screenshot comparison on it; Niall reviews it manually in the browser.
 
 ## Pipeline & git rules
