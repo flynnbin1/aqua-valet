@@ -169,8 +169,14 @@ export default function Hero() {
         {/* Media sits BELOW the fixed header (md+) so the header never covers
             the car, and the crop is biased upward — the car's roof is at 20.5%
             of the frame and the tyres at 85.5%, so a centred crop on a short
-            laptop window clips the roof. */}
-        <div className="absolute inset-0 md:top-[105px]">
+            laptop window clips the roof.
+            Offset matches the header's collapsed (scrolled) height, not its
+            taller resting height with the info strip — the hero pins almost
+            immediately on scroll, so the header is in its collapsed state for
+            virtually the entire pinned scroll. A larger offset here left a
+            permanent gap below the collapsed header once the info strip
+            stopped being sticky. */}
+        <div className="absolute inset-0 md:top-16">
         {mode !== "static" ? (
           <video
             ref={videoRef}
