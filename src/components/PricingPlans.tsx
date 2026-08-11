@@ -13,25 +13,15 @@ import {
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-/* ═══════════════════════════════════════════════════════════════════════
-   ⚠️  PLACEHOLDER VEHICLE ART — swap for real photography when available.
-   ═══════════════════════════════════════════════════════════════════════
-   These are generated silhouette icons (scripts/gen-vehicle-icons.mjs +
-   the HTML source it renders), not photos — there's no real "small car" /
-   "big car" photography yet, only the Range Rover set. Each is a
-   transparent PNG, 480×280 source (icon-only, no card background baked
-   in), rendered from an original ~240×140 vector.
-
-   RECOMMENDED SIZE FOR REAL PHOTOS: side-profile crop, ~5:3 landscape
-   (e.g. 480×280 or 600×360), on a plain/transparent background so it
-   drops into the same card treatment below. Keep each under ~40KB.
-   To replace: drop the new file in public/images/ and update the src
-   below — no other changes needed.
-   ═══════════════════════════════════════════════════════════════════════ */
+/* Vehicle-size tab art: side-profile cutouts, background-removed and
+   normalised onto a shared 900×340 canvas (same ground-line height and
+   height-fill ratio per car) so the three sit consistently regardless of
+   each vehicle's real proportions — see brand_assets/pricing/ for the
+   pre-normalisation masters. The 7-Seater tab has no art yet. */
 const VEHICLE_ICON: Record<VehicleSizeId, string> = {
-  small: "images/vehicle-small.png",
-  big: "images/vehicle-big.png",
-  suv: "images/vehicle-suv.png",
+  small: "images/pricing-small.png",
+  big: "images/pricing-big.png",
+  suv: "images/pricing-suv.png",
 };
 
 /**
@@ -114,9 +104,9 @@ export default function PricingPlans() {
                 <img
                   src={VEHICLE_ICON[v.id]}
                   alt=""
-                  width={480}
-                  height={280}
-                  className={`h-12 w-auto transition-opacity sm:h-16 ${
+                  width={900}
+                  height={340}
+                  className={`h-14 w-auto transition-opacity sm:h-20 ${
                     selected ? "opacity-100" : "opacity-45"
                   }`}
                 />

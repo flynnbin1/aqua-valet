@@ -146,7 +146,7 @@ export default function Hero() {
       id="home"
       aria-label="Aqua Valet — premium valeting, Cork"
     >
-      <div ref={pinRef} className="relative h-svh overflow-hidden">
+      <div ref={pinRef} className="relative h-svh overflow-hidden bg-black">
         {/* Media sits BELOW the fixed header (md+) so the header never covers
             the car, and the crop is biased upward — the car's roof is at 20.5%
             of the frame and the tyres at 85.5%, so a centred crop on a short

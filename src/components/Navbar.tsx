@@ -40,8 +40,14 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {/* Info strip — aqua band */}
-      <div className="bg-accent">
+      {/* Info strip — aqua band. Not sticky: collapses away once the page
+          scrolls, so only the main bar below stays pinned at the top. */}
+      <div
+        aria-hidden={scrolled}
+        className={`overflow-hidden bg-accent transition-[max-height,opacity] duration-300 ${
+          scrolled ? "max-h-0 opacity-0" : "max-h-20 opacity-100"
+        }`}
+      >
         <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-4 py-2 text-xs text-ink sm:px-6 md:text-sm lg:px-10">
           <p className="whitespace-nowrap font-medium">{site.openDays}</p>
           <p className="flex items-center gap-3 whitespace-nowrap font-medium">
@@ -51,6 +57,7 @@ export default function Navbar() {
             </span>
             <a
               href={site.phoneHref}
+              tabIndex={scrolled ? -1 : undefined}
               className={`rounded transition-opacity hover:opacity-70 ${FOCUS}`}
             >
               {site.phoneDisplay}
@@ -85,7 +92,7 @@ export default function Navbar() {
           </a>
 
           {/* Nav centre */}
-          <ul className="hidden items-center gap-1 md:flex">
+          <ul className="hidden items-center gap-1 xl:flex">
             {LINKS.map((link) => (
               <li key={link.href}>
                 <a
@@ -107,7 +114,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <a
               href={site.phoneHref}
-              className={`hidden items-center gap-2 rounded text-sm text-ink-text transition-colors hover:text-accent lg:flex ${FOCUS}`}
+              className={`hidden items-center gap-2 rounded text-sm text-ink-text transition-colors hover:text-accent xl:flex ${FOCUS}`}
             >
               <svg
                 viewBox="0 0 24 24"
@@ -137,11 +144,11 @@ export default function Navbar() {
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-label="Open menu"
-              className={`grid size-11 place-items-center rounded-full text-ink-text transition-colors hover:bg-white/10 md:hidden ${FOCUS}`}
+              className={`grid size-12 place-items-center rounded-full text-ink-text transition duration-150 hover:bg-accent hover:text-ink active:scale-90 xl:hidden ${FOCUS}`}
             >
               <svg
                 viewBox="0 0 24 24"
-                className="size-5"
+                className="size-6"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -159,7 +166,7 @@ export default function Navbar() {
       {menuOpen && (
         <div
           id="mobile-menu"
-          className="fixed inset-0 z-50 flex flex-col bg-ink/95 backdrop-blur-lg md:hidden"
+          className="fixed inset-0 z-50 flex flex-col bg-black xl:hidden"
         >
           <div className="flex items-center justify-between px-6 pt-6">
             <img
@@ -173,11 +180,11 @@ export default function Navbar() {
               type="button"
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
-              className={`grid size-11 place-items-center rounded-full text-ink-text transition-colors hover:bg-white/10 ${FOCUS}`}
+              className={`grid size-12 place-items-center rounded-full text-ink-text transition duration-150 hover:bg-accent hover:text-ink active:scale-90 ${FOCUS}`}
             >
               <svg
                 viewBox="0 0 24 24"
-                className="size-5"
+                className="size-6"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -198,7 +205,7 @@ export default function Navbar() {
                     setMenuOpen(false);
                   }}
                   className={`font-display block rounded-xl px-3 py-3 text-3xl font-extrabold tracking-tight transition-colors ${FOCUS} ${
-                    active === link.href ? "text-ink-text" : "text-ink-muted"
+                    active === link.href ? "text-accent" : "text-ink-text"
                   }`}
                 >
                   {link.label}
@@ -209,14 +216,14 @@ export default function Navbar() {
           <div className="space-y-3 px-8 pb-12">
             <a
               href={site.phoneHref}
-              className={`block rounded-full border border-ink-stroke py-3 text-center text-base text-ink-text ${FOCUS}`}
+              className={`block rounded-full border border-white/25 py-3 text-center text-base text-ink-text transition-colors hover:border-accent hover:text-accent ${FOCUS}`}
             >
               Call {site.phoneDisplay}
             </a>
             <a
               href="#book"
               onClick={() => setMenuOpen(false)}
-              className={`block rounded-full bg-accent py-3 text-center text-base font-semibold text-ink ${FOCUS}`}
+              className={`block rounded-full bg-accent py-3 text-center text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
             >
               Get a Photo Quote
             </a>
