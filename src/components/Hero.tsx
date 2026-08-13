@@ -99,20 +99,15 @@ export default function Hero() {
     );
     // Frames load sequentially, so "loaded" is always a contiguous prefix.
     let maxLoaded = -1;
-    // Fractional frame position — kept fractional so adjacent frames can be
-    // crossfaded. 72 discrete frames over ~2 viewport-heights of scroll is
-    // only ~7 frame changes/sec at a slow deliberate scroll speed (measured)
-    // — visibly steppy even at a rock-solid 60fps. Blending neighbour
-    // frames by the fractional part lifts the CONTENT update rate to the
-    // display rate.
-    let requestedF = 0;
-    let drawnF = -1;
-
+    let requested = 0;
+    let drawn = -1;
     // The crop is biased upward on desktop (object-[center_60%] on the old
     // video): the point 60% down the frame aligns with 60% down the box.
     const focalY = mode === "desktop" ? 0.6 : 0.5;
 
-    const drawOne = (img: HTMLImageElement, alpha: number) => {
+    const draw = (index: number) => {
+      const img = frames[index];
+      if (!img) return;
       const cw = canvas.width;
       const ch = canvas.height;
       const iw = img.naturalWidth;
@@ -121,53 +116,13 @@ export default function Hero() {
       const scale = Math.max(cw / iw, ch / ih);
       const dw = iw * scale;
       const dh = ih * scale;
-      drawCtx.globalAlpha = alpha;
       drawCtx.drawImage(img, (cw - dw) / 2, (ch - dh) * focalY, dw, dh);
-      drawCtx.globalAlpha = 1;
+      drawn = index;
     };
-
-    // The browser evicts decoded frame data long before we revisit a frame
-    // (72 decoded frames is far over its cache budget), so an unprimed
-    // drawImage forces a SYNCHRONOUS main-thread re-decode — measured at
-    // 50–160ms per frame under 4× CPU throttle, the dominant jank source
-    // on slower devices. decode() re-primes the cache asynchronously, so
-    // warming the frames just ahead of the scrub direction keeps draws
-    // cheap. (Still no ImageBitmap cache — we never own decoded memory.)
-    let lastPrimed = -1;
-    const primeAhead = (base: number, direction: number) => {
-      if (base === lastPrimed) return;
-      lastPrimed = base;
-      for (let k = 1; k <= 3; k++) {
-        const idx = base + k * direction;
-        if (idx >= 0 && idx < FRAME_COUNT) frames[idx]?.decode().catch(() => {});
-      }
-    };
-
-    // Adaptive quality: the crossfade doubles per-tick draw work, which a
-    // fast desktop absorbs invisibly but a slow phone cannot (measured:
-    // rAF p50 doubled under 4× CPU throttle during fast scrolls). Track an
-    // exponential moving average of real draw cost and drop the blend —
-    // single-frame draws, like the pre-crossfade behaviour — while this
-    // device is struggling. Slow devices get the old stepping, fast ones
-    // get fluid blending; nobody gets jank we can avoid.
-    let drawCostEma = 0;
 
     const renderRequested = () => {
-      const f = Math.min(requestedF, maxLoaded);
-      if (f < 0 || Math.abs(f - drawnF) < 0.02) return;
-      const base = Math.floor(f);
-      const frac = f - base;
-      const baseImg = frames[base];
-      if (!baseImg) return;
-      const blend = drawCostEma < 20;
-      const nextImg =
-        blend && frac > 0.01 ? frames[Math.min(base + 1, maxLoaded)] : null;
-      const t0 = performance.now();
-      drawOne(baseImg, 1);
-      if (nextImg && nextImg !== baseImg) drawOne(nextImg, frac);
-      drawCostEma = drawCostEma * 0.8 + (performance.now() - t0) * 0.2;
-      primeAhead(base, f >= drawnF ? 1 : -1);
-      drawnF = f;
+      const index = Math.min(requested, maxLoaded);
+      if (index >= 0 && index !== drawn) draw(index);
     };
 
     // Canvas backing store tracks the box size (DPR capped at 2 — 3× is
@@ -177,7 +132,7 @@ export default function Hero() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(box.width * dpr);
       canvas.height = Math.round(box.height * dpr);
-      drawnF = -1; // resizing clears the canvas — force a redraw
+      drawn = -1; // resizing clears the canvas — force a redraw
       renderRequested();
     };
     fit();
@@ -244,17 +199,11 @@ export default function Hero() {
         // through the intermediate frames instead.
         scrub: 0.5,
         onUpdate: (self) => {
-          requestedF = self.progress * (FRAME_COUNT - 1);
+          requested = Math.round(self.progress * (FRAME_COUNT - 1));
           renderRequested();
           if (hintRef.current) {
             hintRef.current.style.opacity = self.progress > 0.02 ? "0" : "1";
           }
-        },
-        // When the catch-up settles, snap to the nearest whole frame so a
-        // stopped scroll never rests on a soft two-frame blend.
-        onScrubComplete: (self) => {
-          requestedF = Math.round(self.progress * (FRAME_COUNT - 1));
-          renderRequested();
         },
       });
 
