@@ -24,7 +24,7 @@ const frameSrc = (mode: "desktop" | "mobile", i: number) =>
 /**
  * Scroll-scrubbed frame-sequence hero.
  *
- * The hero pins for ~200vh and scroll position picks a frame from a WebP
+ * The hero pins for ~150vh and scroll position picks a frame from a WebP
  * image sequence, drawn to a canvas — scrolling down advances the valet
  * film, scrolling up reverses it. This replaced video.currentTime seeking,
  * which iOS WebKit throttles during touch-scroll gestures (the scrub froze
@@ -191,13 +191,21 @@ export default function Hero() {
       ScrollTrigger.create({
         trigger: pinRef.current,
         start: "top top",
-        end: "+=200%",
+        // 150% (not 200%): measured with a simulated momentum fling, a
+        // full vigorous flick (~1600px desktop) never escaped a 200% pin —
+        // the hero held the visitor hostage. At 150% the same fling clears
+        // it with room to spare while the film still plays through
+        // visibly; at 100% a flick reduced the whole dirty→clean story to
+        // a ~3-draw jump-cut.
+        end: "+=150%",
         pin: true,
         // Small smoothing (not a hard link): with 72 discrete frames, a
         // hard-linked scrub lands every wheel tick as a quantized step
-        // with zero easing — reads as "sticky". 0.5s of catch-up glides
-        // through the intermediate frames instead.
-        scrub: 0.5,
+        // with zero easing — reads as "sticky". 0.3s of catch-up glides
+        // through the intermediate frames; measured identical to both
+        // scrub:true and 0.5 on fast flicks (zero settle lag), so this
+        // buys slow-scroll glide without adding any flick drag.
+        scrub: 0.3,
         onUpdate: (self) => {
           requested = Math.round(self.progress * (FRAME_COUNT - 1));
           renderRequested();
