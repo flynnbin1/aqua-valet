@@ -161,30 +161,38 @@ export default function Hero() {
           .finally(resolve);
       });
 
-    // Frame 1 immediately (cache-hit — the eager <img> below already
-    // fetched it); the rest sequentially once the page has loaded, so the
-    // sequence never competes with critical-path resources. EXCEPT: the
-    // first scroll/touch is intent to scrub — at that point the frames ARE
-    // the critical resource, so start at once instead of letting the scrub
-    // sit sticky on frame 1 while below-fold images finish. (LCP is
-    // unaffected: by the time the visitor interacts, the hero has painted.)
-    let restStarted = false;
-    const startRest = () => {
-      if (restStarted || cancelled) return;
-      restStarted = true;
-      (async () => {
-        for (let i = 1; i < FRAME_COUNT && !cancelled; i++) {
-          await loadFrame(i);
-        }
-      })();
-    };
+    // Loading order (single sequential pipeline — keeps maxLoaded a
+    // contiguous prefix):
+    //  - frame 1: immediate (cache-hit — the eager <img> below fetched it)
+    //  - frames 2–15 (the warm batch): immediately after mount. Measured on
+    //    a cold first flick, the scroll wanted frame 71 while frame ~1 was
+    //    drawn (lag of 70 frames, 2.1s of catch-up after the gesture) —
+    //    the first scroll felt stuck purely because nothing was decoded
+    //    yet. Warming ~15 frames covers the opening of the scrub without
+    //    holding decoded bitmaps ourselves and without touching the LCP
+    //    frame, and the pipeline keeps feeding ahead during the gesture.
+    //  - frames 16–72: gated behind the load event OR first scroll/touch
+    //    (intent to scrub), so the bulk never competes with critical-path
+    //    resources on slow connections.
+    const WARM_FRAMES = 14;
+    let unlockRest = () => {};
+    const restUnlocked = new Promise<void>((resolve) => {
+      unlockRest = resolve;
+    });
     loadFrame(0);
+    (async () => {
+      for (let i = 1; i < FRAME_COUNT && !cancelled; i++) {
+        if (i > WARM_FRAMES) await restUnlocked;
+        if (cancelled) return;
+        await loadFrame(i);
+      }
+    })();
     if (document.readyState === "complete") {
-      startRest();
+      unlockRest();
     } else {
-      window.addEventListener("load", startRest, { once: true });
-      window.addEventListener("scroll", startRest, { once: true, passive: true });
-      window.addEventListener("touchstart", startRest, { once: true, passive: true });
+      window.addEventListener("load", unlockRest, { once: true });
+      window.addEventListener("scroll", unlockRest, { once: true, passive: true });
+      window.addEventListener("touchstart", unlockRest, { once: true, passive: true });
     }
 
     const ctx = gsap.context(() => {
@@ -239,9 +247,10 @@ export default function Hero() {
     return () => {
       cancelled = true;
       window.removeEventListener("resize", fit);
-      window.removeEventListener("load", startRest);
-      window.removeEventListener("scroll", startRest);
-      window.removeEventListener("touchstart", startRest);
+      window.removeEventListener("load", unlockRest);
+      window.removeEventListener("scroll", unlockRest);
+      window.removeEventListener("touchstart", unlockRest);
+      unlockRest(); // release the gated loop so its pending await resolves
       ctx.revert();
     };
   }, [mode]);
