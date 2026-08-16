@@ -217,7 +217,7 @@ export default function Navbar({
           id="mobile-menu"
           className="fixed inset-0 z-50 flex flex-col bg-black xl:hidden"
         >
-          <div className="flex items-center justify-between px-6 pt-6">
+          <div className="flex shrink-0 items-center justify-between px-6 pb-2 pt-6">
             <img
               src={wordmark}
               alt="AquaValet"
@@ -244,7 +244,12 @@ export default function Navbar({
               </svg>
             </button>
           </div>
-          <ul className="flex flex-1 flex-col justify-center gap-1 overflow-y-auto px-8">
+          {/* Scroll architecture: this wrapper owns the scrolling; the ul
+              uses my-auto so short content still sits vertically centred,
+              but tall content (a section expanded on a small phone) scrolls
+              from an in-reach top instead of justify-center clipping it. */}
+          <div className="min-h-0 flex-1 overflow-y-auto px-8">
+          <ul className="my-auto flex min-h-full flex-col justify-center gap-2 py-6">
             {navPages.map((link) => (
               <li key={link.href}>
                 <div className="flex items-center justify-between">
@@ -279,7 +284,7 @@ export default function Navbar({
                   )}
                 </div>
                 {link.children && expanded === link.href && (
-                  <ul className="mb-2 ml-4 border-l border-ink-stroke pl-4">
+                  <ul className="mb-3 ml-4 mt-1 space-y-1 border-l border-ink-stroke pl-4">
                     {link.children.map((child) => (
                       <li key={child.href}>
                         <a
@@ -288,7 +293,7 @@ export default function Navbar({
                             isCurrent(child.href) ? "page" : undefined
                           }
                           onClick={() => setMenuOpen(false)}
-                          className={`block rounded-lg px-2 py-2 text-lg font-medium transition-colors ${FOCUS} ${
+                          className={`flex min-h-12 items-center rounded-lg px-3 text-lg font-medium transition-colors ${FOCUS} ${
                             isCurrent(child.href)
                               ? "text-accent"
                               : "text-ink-muted hover:text-ink-text"
@@ -303,7 +308,10 @@ export default function Navbar({
               </li>
             ))}
           </ul>
-          <div className="space-y-3 px-8 pb-12">
+          </div>
+          {/* CTA block: pinned below the scrolling list (shrink-0) with a
+              hairline so the last nav item never crowds the buttons. */}
+          <div className="shrink-0 space-y-3 border-t border-ink-stroke px-8 pb-8 pt-6">
             <a
               href={site.phoneHref}
               className={`block rounded-full border border-white/25 py-3 text-center text-base text-ink-text transition-colors hover:border-accent hover:text-accent ${FOCUS}`}
