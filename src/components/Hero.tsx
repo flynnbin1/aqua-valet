@@ -367,17 +367,23 @@ export default function Hero() {
             {/* Sub-copy + rating: desktop only (xl, matching the header's
                 hamburger cutover) — on phones/tablets they crowded the car
                 out of the clear band between headline and CTAs. */}
-            <p className="blur-in mt-5 hidden max-w-md text-balance text-base text-ink-muted md:mt-6 xl:block">
+            <p className="blur-in mt-5 hidden max-w-md text-balance text-base text-ink-text md:mt-6 xl:block">
               Deep-clean specialists for people who care about their car. Eight
               years in Cork. By appointment only.
             </p>
-            <p className="blur-in mt-4 hidden items-center gap-2 text-sm text-ink-muted xl:flex">
+            <p className="blur-in mt-4 hidden items-center gap-2 text-sm text-ink-text xl:flex">
+              {/* 4½ stars: four full + a fifth whose aqua half is clipped
+                  over a full-width muted star underneath */}
               <span className="text-accent" aria-hidden="true">
-                ★★★★★
+                ★★★★
+                <span className="relative inline-block">
+                  <span className="text-ink-muted/50">★</span>
+                  <span className="absolute inset-y-0 left-0 w-1/2 overflow-hidden">
+                    ★
+                  </span>
+                </span>
               </span>
-              <span>
-                {site.rating} · {site.reviewCount} Google reviews
-              </span>
+              <span>· {site.reviewCount} Google reviews</span>
             </p>
           </div>
           <div className="blur-in mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4 md:mt-9">

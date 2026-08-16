@@ -19,14 +19,22 @@ html = html.replace(
   },
 );
 
-// Inline the module script(s); escape any literal </script> inside the code
+// Inline the module script(s); escape any literal </script> inside the code.
+// Code-split chunks are imported by the entry with MODULE-relative
+// specifiers ("./Chunk-x.js", correct from inside assets/) — once the code
+// is inlined into the document those resolve DOCUMENT-relative, so rewrite
+// each known chunk specifier to "./assets/Chunk-x.js".
+const chunkNames = readdirSync(join(dist, "assets")).filter((f) =>
+  f.endsWith(".js"),
+);
 html = html.replace(
   /<script type="module"[^>]*src="\.\/(assets\/[^"]+\.js)"[^>]*><\/script>/g,
   (_, jsFile) => {
-    const js = readFileSync(join(dist, jsFile), "utf8").replaceAll(
-      "</script",
-      "<\\/script",
-    );
+    let js = readFileSync(join(dist, jsFile), "utf8");
+    for (const chunk of chunkNames) {
+      js = js.replaceAll(`"./${chunk}"`, `"./assets/${chunk}"`);
+    }
+    js = js.replaceAll("</script", "<\\/script");
     return `<script type="module">${js}</script>`;
   },
 );

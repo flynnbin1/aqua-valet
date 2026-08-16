@@ -90,21 +90,39 @@ const STAR_PATH =
 
 const StarRow = ({
   count,
+  half = false,
   className = "size-4",
 }: {
   count: number;
+  /** Render the star after the last full one as a half-filled star. */
+  half?: boolean;
   className?: string;
 }) => (
   <span className="inline-flex gap-0.5" aria-hidden="true">
-    {Array.from({ length: 5 }, (_, i) => (
-      <svg
-        key={i}
-        viewBox="0 0 20 20"
-        className={i < count ? `${className} fill-accent-strong` : `${className} fill-stroke`}
-      >
-        <path d={STAR_PATH} />
-      </svg>
-    ))}
+    {Array.from({ length: 5 }, (_, i) =>
+      half && i === count ? (
+        <svg key={i} viewBox="0 0 20 20" className={className}>
+          <defs>
+            <linearGradient id="star-half-fill" x1="0" x2="1" y1="0" y2="0">
+              <stop
+                offset="50%"
+                style={{ stopColor: "hsl(var(--accent-strong))" }}
+              />
+              <stop offset="50%" style={{ stopColor: "hsl(var(--stroke))" }} />
+            </linearGradient>
+          </defs>
+          <path d={STAR_PATH} fill="url(#star-half-fill)" />
+        </svg>
+      ) : (
+        <svg
+          key={i}
+          viewBox="0 0 20 20"
+          className={i < count ? `${className} fill-accent-strong` : `${className} fill-stroke`}
+        >
+          <path d={STAR_PATH} />
+        </svg>
+      ),
+    )}
   </span>
 );
 
@@ -146,18 +164,81 @@ const QuoteMark = () => (
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
+// The one testimonial card design, shared by the homepage carousel and the
+// /your-feedback/ grid — extra classes (snap/sizing) come from the caller.
+type Review = { name: string; rating: number; quote: string };
+const ReviewCard = ({
+  review,
+  className = "",
+}: {
+  review: Review;
+  className?: string;
+}) => (
+  <article
+    className={`relative flex flex-col overflow-hidden rounded-3xl border border-stroke bg-surface p-8 transition hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_18px_40px_rgba(14,42,71,0.13)] ${className}`}
+  >
+    <QuoteMark />
+    <StarRow count={review.rating} />
+    <p className="relative mt-4 flex-1 text-base leading-relaxed text-text-primary">
+      &ldquo;{review.quote}&rdquo;
+    </p>
+    <div className="mt-6 flex items-center gap-2">
+      <p className="text-sm font-medium text-muted">{review.name}</p>
+      <GoogleG className="size-3.5" />
+    </div>
+  </article>
+);
+
+// The ten strongest genuine reviews for the /your-feedback/ grid — eight
+// from the Google set above plus two carried over from the old site's
+// testimonials (see docs/site-content-draft.ts). All real; none invented.
+const BEST_REVIEWS: Review[] = [
+  ...REVIEWS.filter((r) =>
+    [
+      "Frank Brennan",
+      "Catherine Gaudino",
+      "Jeanne O'Hare",
+      "Shauna Nolan",
+      "Camilla Monroe",
+      "Barry McCarthy",
+      "Donal Ryan",
+      "Elaine O'Brien",
+    ].includes(r.name),
+  ),
+  {
+    name: "Carol O'Regan",
+    rating: 5,
+    quote:
+      "My car came back spotless inside and out — like new. Very competitive prices and they do a pick up and delivery if you don't have time to drop it off. I would highly recommend Aqua Valet to anyone.",
+  },
+  {
+    name: "Suzanne Hastings",
+    rating: 5,
+    quote:
+      "The attention to detail is excellent and great value for money. Lou, who came to collect, was extremely professional. I will definitely be going back and would not hesitate to recommend this service to friends.",
+  },
+];
+
 /**
  * Elegant testimonial carousel — one card visible on phones, two on tablet
  * and up. Native horizontal scroll-snap drives both swipe and the arrow
  * buttons, so touch, trackpad and keyboard (focus the track, use ←/→) all
  * work without any drag-gesture logic to maintain.
  *
+ * layout="grid" (the /your-feedback/ page) swaps the slider for a static
+ * two-across grid of the ten best genuine reviews — same heading, badge
+ * and card design, no controls.
+ *
  * Light section (white, like Pricing/Enquiry): placing this dark would sit
  * it directly between white Enquiry and the dark footer, recreating the
  * dark-into-dark seam already fixed once. Aqua text here uses
  * --accent-strong for contrast on white — see docs/BRAND-GUIDELINES.md.
  */
-export default function ReviewsCarousel() {
+export default function ReviewsCarousel({
+  layout = "carousel",
+}: {
+  layout?: "carousel" | "grid";
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [atStart, setAtStart] = useState(true);
@@ -215,16 +296,23 @@ export default function ReviewsCarousel() {
           <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-stroke bg-surface py-2 pl-4 pr-5 shadow-[0_1px_2px_rgba(14,42,71,0.06)]">
             <GoogleG />
             <span className="h-5 w-px bg-stroke" aria-hidden="true" />
-            <StarRow count={5} className="size-4" />
-            <span className="font-semibold text-text-primary">
-              {site.rating}
-            </span>
+            <StarRow count={4} half className="size-4" />
             <span className="text-muted">
               · {site.reviewCount} Google reviews
             </span>
           </div>
         </motion.div>
 
+        {layout === "grid" ? (
+          <motion.div
+            {...sectionReveal}
+            className="mt-12 grid gap-6 sm:grid-cols-2"
+          >
+            {BEST_REVIEWS.map((review) => (
+              <ReviewCard key={review.name} review={review} />
+            ))}
+          </motion.div>
+        ) : (
         <motion.div {...sectionReveal} className="mt-12">
           <div
             ref={trackRef}
@@ -236,22 +324,11 @@ export default function ReviewsCarousel() {
             className={`no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth rounded-3xl ${FOCUS}`}
           >
             {REVIEWS.map((review) => (
-              <article
+              <ReviewCard
                 key={review.name}
-                className="relative flex w-full shrink-0 snap-start flex-col overflow-hidden rounded-3xl border border-stroke bg-surface p-8 transition hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_18px_40px_rgba(14,42,71,0.13)] sm:w-[calc(50%-0.75rem)]"
-              >
-                <QuoteMark />
-                <StarRow count={review.rating} />
-                <p className="relative mt-4 flex-1 text-base leading-relaxed text-text-primary">
-                  &ldquo;{review.quote}&rdquo;
-                </p>
-                <div className="mt-6 flex items-center gap-2">
-                  <p className="text-sm font-medium text-muted">
-                    {review.name}
-                  </p>
-                  <GoogleG className="size-3.5" />
-                </div>
-              </article>
+                review={review}
+                className="w-full shrink-0 snap-start sm:w-[calc(50%-0.75rem)]"
+              />
             ))}
           </div>
 
@@ -307,6 +384,7 @@ export default function ReviewsCarousel() {
             </button>
           </div>
         </motion.div>
+        )}
       </div>
     </section>
   );

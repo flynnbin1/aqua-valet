@@ -23,18 +23,18 @@ const ENQUIRY_WEBHOOK_URL = "";
 const STEPS = [
   {
     n: "1",
-    title: "Send your details",
-    copy: "Name, number and what you drive — about thirty seconds.",
+    title: "Fill in the form",
+    copy: "Your name, number and what you drive — about thirty seconds.",
   },
   {
     n: "2",
-    title: "We WhatsApp you for 3–4 photos",
-    copy: "Inside and out, however they look. No tidying up first.",
+    title: "We WhatsApp you for photos",
+    copy: "We'll ask for 3–4 photos or a quick video of the car as it looks now. No tidying up first.",
   },
   {
     n: "3",
-    title: "You get an accurate quote",
-    copy: "Priced on the actual condition, before you drive over.",
+    title: "You get an exact quote",
+    copy: "Priced on the car's actual condition, so you know exactly what it'll cost before you drive over.",
   },
 ];
 
@@ -132,14 +132,6 @@ export default function Enquiry() {
                 we&rsquo;ll come back with a price.
               </p>
 
-              <a
-                href={site.whatsappHref}
-                className={`mt-7 inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-accent px-8 text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
-              >
-                <WhatsAppGlyph className="size-6" />
-                Message us on WhatsApp
-              </a>
-
               <p className="mt-4 text-sm text-ink-muted">
                 Or call{" "}
                 <a
@@ -175,8 +167,11 @@ export default function Enquiry() {
             </div>
           </motion.div>
 
-          {/* ALTERNATIVE — short form */}
-          <motion.div {...sectionReveal} className="lg:col-span-7">
+          {/* ALTERNATIVE — short form. id anchors the quote CTAs directly to
+              the form card (not the section top) so a scroll-to-form lands
+              on the fields even on mobile, where this card stacks BELOW the
+              WhatsApp card. */}
+          <motion.div {...sectionReveal} id="enquiry-form" className="scroll-mt-32 lg:col-span-7">
             <div className="h-full rounded-3xl border border-ink-stroke bg-ink p-8 text-ink-text md:p-10">
               {status === "sent" ? (
                 <div

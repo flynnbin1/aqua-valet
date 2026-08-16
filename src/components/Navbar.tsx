@@ -1,27 +1,57 @@
 import { useEffect, useState } from "react";
-import { site } from "../lib/site";
+import { navPages, site, type NavPage } from "../lib/site";
 import wordmark from "../../assets/aquavalet-wordmark.png";
-
-const LINKS = [
-  { label: "Services", href: "#services" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Book", href: "#book" },
-  { label: "Reviews", href: "#reviews" },
-  { label: "Contact", href: "#contact" },
-];
 
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+const Chevron = ({ className = "size-4" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
 
 /**
  * Full-width header per the vwash-ref-2 structure (structure only):
  * a thin info strip (hours | address + phone) above the main bar with
  * logo left, nav centre, phone + solid WhatsApp CTA right.
+ *
+ * Nav links point at the real Wave 1 pages (sitemap-plan.md URLs).
+ * `root` is the relative prefix back to the site root from the current
+ * page ("" on the homepage, "../" one level down, "../../" two levels)
+ * so links resolve from any depth under any web root. `currentPath` is
+ * the page's site-root-relative URL (e.g. "services/car-valeting/") used
+ * to highlight the current section of the site.
  */
-export default function Navbar() {
+export default function Navbar({
+  root = "",
+  currentPath = "",
+}: {
+  root?: string;
+  currentPath?: string;
+}) {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("#home");
   const [menuOpen, setMenuOpen] = useState(false);
+  // Which mobile section (by href) is expanded to show its sub-links
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const isCurrent = (href: string) =>
+    currentPath === href ||
+    (href !== "" && currentPath.startsWith(href.replace(/\/$/, "/")));
+  // A page counts as "inside" a nav item if it matches the item's own URL
+  // prefix OR any of its dropdown children — needed because the Deep Clean
+  // Reset (a Packages child) lives under /product/, not /packages/.
+  const isCurrentSection = (link: NavPage) =>
+    isCurrent(link.href) ||
+    (link.children ?? []).some((c) => isCurrent(c.href));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -52,16 +82,6 @@ export default function Navbar() {
           <p className="whitespace-nowrap font-medium">{site.openDays}</p>
           <p className="flex items-center gap-3 whitespace-nowrap font-medium">
             <span className="hidden sm:inline">Centre Park Road, Cork City</span>
-            <span className="hidden sm:inline text-ink/40" aria-hidden="true">
-              |
-            </span>
-            <a
-              href={site.phoneHref}
-              tabIndex={scrolled ? -1 : undefined}
-              className={`rounded transition-opacity hover:opacity-70 ${FOCUS}`}
-            >
-              {site.phoneDisplay}
-            </a>
           </p>
         </div>
       </div>
@@ -78,7 +98,7 @@ export default function Navbar() {
         >
           {/* Logo left */}
           <a
-            href="#home"
+            href={root === "" ? "#home" : root}
             aria-label="AquaValet — home"
             className={`flex min-h-11 shrink-0 items-center rounded ${FOCUS}`}
           >
@@ -91,21 +111,50 @@ export default function Navbar() {
             />
           </a>
 
-          {/* Nav centre */}
+          {/* Nav centre. Items with children get a hover/focus dropdown —
+              CSS-only (group-hover + focus-within), so the top-level label
+              stays a plain link to the hub page, the panel opens the moment
+              anything inside receives keyboard focus, and tabbing onward
+              moves through the child links in order. */}
           <ul className="hidden items-center gap-1 xl:flex">
-            {LINKS.map((link) => (
-              <li key={link.href}>
+            {navPages.map((link) => (
+              <li key={link.href} className="group relative">
                 <a
-                  href={link.href}
-                  onClick={() => setActive(link.href)}
-                  className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm transition-colors hover:text-accent-strong ${FOCUS} ${
-                    active === link.href
+                  href={`${root}${link.href}`}
+                  aria-current={isCurrentSection(link) ? "page" : undefined}
+                  aria-haspopup={link.children ? "menu" : undefined}
+                  className={`inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-sm transition-colors hover:text-accent-strong ${FOCUS} ${
+                    isCurrentSection(link)
                       ? "bg-white/10 text-ink-text"
                       : "text-ink-text"
                   }`}
                 >
                   {link.label}
+                  {link.children && (
+                    <Chevron className="size-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
+                  )}
                 </a>
+                {link.children && (
+                  <ul
+                    className="invisible absolute left-0 top-full z-50 mt-1 min-w-56 translate-y-1 rounded-2xl border border-ink-stroke bg-ink py-2 opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.5)] transition duration-150 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
+                  >
+                    {link.children.map((child) => (
+                      <li key={child.href}>
+                        <a
+                          href={`${root}${child.href}`}
+                          aria-current={isCurrent(child.href) ? "page" : undefined}
+                          className={`block px-5 py-2.5 text-sm transition-colors hover:bg-white/5 hover:text-accent ${FOCUS} ${
+                            isCurrent(child.href)
+                              ? "text-accent"
+                              : "text-ink-text"
+                          }`}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
@@ -131,7 +180,7 @@ export default function Navbar() {
               {site.phoneDisplay}
             </a>
             <a
-              href="#book"
+              href={`${root}book-now/`}
               className={`hidden min-h-11 items-center rounded-full bg-accent px-5 text-sm font-semibold text-ink transition-colors hover:bg-accent-light sm:flex ${FOCUS}`}
             >
               Get a Photo Quote
@@ -195,21 +244,62 @@ export default function Navbar() {
               </svg>
             </button>
           </div>
-          <ul className="flex flex-1 flex-col justify-center gap-2 px-8">
-            {LINKS.map((link) => (
+          <ul className="flex flex-1 flex-col justify-center gap-1 overflow-y-auto px-8">
+            {navPages.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
-                  onClick={() => {
-                    setActive(link.href);
-                    setMenuOpen(false);
-                  }}
-                  className={`font-display block rounded-xl px-3 py-3 text-3xl font-extrabold tracking-tight transition-colors ${FOCUS} ${
-                    active === link.href ? "text-accent" : "text-ink-text"
-                  }`}
-                >
-                  {link.label}
-                </a>
+                <div className="flex items-center justify-between">
+                  <a
+                    href={`${root}${link.href}`}
+                    aria-current={isCurrentSection(link) ? "page" : undefined}
+                    onClick={() => setMenuOpen(false)}
+                    className={`font-display block rounded-xl px-3 py-2.5 text-3xl font-extrabold tracking-tight transition-colors ${FOCUS} ${
+                      isCurrentSection(link) ? "text-accent" : "text-ink-text"
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                  {link.children && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpanded(expanded === link.href ? null : link.href)
+                      }
+                      aria-expanded={expanded === link.href}
+                      aria-label={`${
+                        expanded === link.href ? "Collapse" : "Expand"
+                      } ${link.label}`}
+                      className={`grid size-11 place-items-center rounded-full text-ink-muted transition hover:bg-white/10 hover:text-ink-text ${FOCUS}`}
+                    >
+                      <Chevron
+                        className={`size-5 transition-transform ${
+                          expanded === link.href ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                  )}
+                </div>
+                {link.children && expanded === link.href && (
+                  <ul className="mb-2 ml-4 border-l border-ink-stroke pl-4">
+                    {link.children.map((child) => (
+                      <li key={child.href}>
+                        <a
+                          href={`${root}${child.href}`}
+                          aria-current={
+                            isCurrent(child.href) ? "page" : undefined
+                          }
+                          onClick={() => setMenuOpen(false)}
+                          className={`block rounded-lg px-2 py-2 text-lg font-medium transition-colors ${FOCUS} ${
+                            isCurrent(child.href)
+                              ? "text-accent"
+                              : "text-ink-muted hover:text-ink-text"
+                          }`}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
@@ -221,7 +311,7 @@ export default function Navbar() {
               Call {site.phoneDisplay}
             </a>
             <a
-              href="#book"
+              href={`${root}book-now/`}
               onClick={() => setMenuOpen(false)}
               className={`block rounded-full bg-accent py-3 text-center text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
             >

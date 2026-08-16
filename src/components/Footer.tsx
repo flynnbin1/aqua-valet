@@ -1,23 +1,26 @@
 import { site } from "../lib/site";
 import wordmark from "../../assets/aquavalet-wordmark.png";
 
+// Real Wave 1 pages (sitemap-plan.md URLs), site-root-relative — prefixed
+// with the page's `root` at render time so they resolve from any depth.
 const QUICK_LINKS = [
-  { label: "Services", href: "#services" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Book", href: "#book" },
-  { label: "Reviews", href: "#reviews" },
-  { label: "Contact", href: "#contact" },
+  { label: "Packages", href: "packages/" },
+  { label: "Services", href: "services/" },
+  { label: "Book", href: "book-now/" },
+  { label: "Our Work", href: "valeting-work/" },
+  { label: "Reviews", href: "your-feedback/" },
+  { label: "About", href: "about-us/" },
+  { label: "Contact", href: "contact/" },
 ];
 
-// Individual service pages aren't built yet (see docs/sitemap-plan.md Wave
-// 1), so these point at the on-page section that actually covers each one
-// rather than a page that doesn't exist.
+// Interior detailing and pet hair removal don't get their own pages until
+// Wave 2 — both live on the Deep Clean Reset page for now.
 const FOOTER_SERVICES = [
-  { label: "Car Valeting", href: "#pricing" },
-  { label: "Deep Clean Reset", href: "#pricing" },
-  { label: "Interior Detailing", href: "#services" },
-  { label: "Pet Hair Removal", href: "#add-ons" },
-  { label: "Pickup & Drop-off", href: "#add-ons" },
+  { label: "Car Valeting", href: "services/car-valeting/" },
+  { label: "Car Wash", href: "services/car-wash/" },
+  { label: "Deep Clean Reset", href: "product/deep-clean-valet/" },
+  { label: "Pet Hair Removal", href: "product/deep-clean-valet/" },
+  { label: "Pickup & Drop-off", href: "services/pickup-mobile-valeting/" },
 ];
 
 const FOCUS =
@@ -49,7 +52,7 @@ const InstagramIcon = ({ className = "size-5" }: { className?: string }) => (
 const ICON_BUTTON =
   `grid size-10 place-items-center rounded-full border border-ink-stroke text-ink-muted transition-colors hover:border-accent hover:text-accent ${FOCUS}`;
 
-export default function Footer() {
+export default function Footer({ root = "" }: { root?: string }) {
   return (
     <footer id="contact" className="bg-ink text-ink-text">
       <div className="mx-auto max-w-[1200px] px-6 py-16 md:px-10 md:py-20">
@@ -57,7 +60,7 @@ export default function Footer() {
           {/* Logo */}
           <div className="col-span-2 md:col-span-1">
             <a
-              href="#home"
+              href={root === "" ? "#home" : root}
               aria-label="AquaValet — home"
               className={`inline-block rounded ${FOCUS}`}
             >
@@ -77,7 +80,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {QUICK_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href} className={LINK}>
+                  <a href={`${root}${link.href}`} className={LINK}>
                     {link.label}
                   </a>
                 </li>
@@ -91,7 +94,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {FOOTER_SERVICES.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className={LINK}>
+                  <a href={`${root}${link.href}`} className={LINK}>
                     {link.label}
                   </a>
                 </li>

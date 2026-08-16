@@ -5,7 +5,6 @@ import Star from "./Star";
 import {
   VEHICLE_PRICING,
   cardCaveat,
-  site,
   vehicleSizes,
   type VehicleSizeId,
 } from "../lib/site";
@@ -33,8 +32,19 @@ const VEHICLE_ICON: Record<VehicleSizeId, string> = {
  *
  * NOTE: the figures come from VEHICLE_PRICING in lib/site.ts and are
  * PLACEHOLDERS — see the banner comment there before quoting anything.
+ *
+ * quoteHref: where "Get exact quote" goes. The default ("#enquiry-form")
+ * scrolls to the on-page form — right for the homepage, where the Lenis
+ * anchor handler smooth-scrolls it under the sticky header. Pages WITHOUT
+ * the form (the packages hub) pass their route to /book-now/ instead.
  */
-export default function PricingPlans() {
+export default function PricingPlans({
+  root = "",
+  quoteHref = "#enquiry-form",
+}: {
+  root?: string;
+  quoteHref?: string;
+}) {
   const [size, setSize] = useState<VehicleSizeId>("small");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -102,7 +112,7 @@ export default function PricingPlans() {
                 }`}
               >
                 <img
-                  src={VEHICLE_ICON[v.id]}
+                  src={`${root}${VEHICLE_ICON[v.id]}`}
                   alt=""
                   width={900}
                   height={340}
@@ -168,7 +178,7 @@ export default function PricingPlans() {
               <p className="mt-6 text-sm text-muted">{cardCaveat}</p>
 
               <a
-                href={site.whatsappHref}
+                href={quoteHref}
                 className={`mt-6 inline-flex min-h-12 items-center justify-center gap-1.5 rounded-full text-base transition-colors ${FOCUS} ${
                   pkg.popular
                     ? "bg-accent font-semibold text-ink hover:bg-accent-light"

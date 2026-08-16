@@ -19,6 +19,43 @@ export const site = {
   instagram: "#", // TODO: Instagram link
 };
 
+// Wave 1 pages — hrefs are site-root-relative WITHOUT the leading slash so
+// each page can prefix its own depth ("" on /, "../" one level down, etc.).
+// URLs must match sitemap-plan.md exactly — KEEP URLs protect live rankings.
+// `children` power the header dropdowns (desktop) / expanders (mobile);
+// the top-level label stays a link to the hub page either way. Note the
+// Deep Clean Reset lives under /product/ (its ranking KEEP URL), so parent
+// highlighting must come from this children list, not URL prefixes.
+export type NavPage = {
+  label: string;
+  href: string;
+  children?: { label: string; href: string }[];
+};
+export const navPages: NavPage[] = [
+  {
+    label: "Packages",
+    href: "packages/",
+    children: [
+      { label: "Essential Clean", href: "packages/essential-clean/" },
+      { label: "Full Valet", href: "packages/full-valet/" },
+      { label: "The Deep Clean Reset", href: "product/deep-clean-valet/" },
+    ],
+  },
+  {
+    label: "Services",
+    href: "services/",
+    children: [
+      { label: "Car Valeting", href: "services/car-valeting/" },
+      { label: "Car Wash", href: "services/car-wash/" },
+      { label: "Pickup & Mobile Valeting", href: "services/pickup-mobile-valeting/" },
+    ],
+  },
+  { label: "Our Work", href: "valeting-work/" },
+  { label: "Reviews", href: "your-feedback/" },
+  { label: "About", href: "about-us/" },
+  { label: "Contact", href: "contact/" },
+];
+
 export const packages = [
   {
     name: "Essential Clean",
