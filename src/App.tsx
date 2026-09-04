@@ -4,7 +4,7 @@ import Hero from "./components/Hero";
 import ServicesMarquee from "./components/ServicesMarquee";
 import ProfessionalWash from "./components/ProfessionalWash";
 import BeforeAfterSlider from "./components/BeforeAfterSlider";
-import PricingPlans from "./components/PricingPlans";
+import ServiceMenu from "./components/ServiceMenu";
 import AddOns from "./components/AddOns";
 import Enquiry from "./components/Enquiry";
 import ReviewsCarousel from "./components/ReviewsCarousel";
@@ -27,7 +27,10 @@ export default function App() {
         <ServicesMarquee />
         <ProfessionalWash />
         <BeforeAfterSlider />
-        <PricingPlans />
+        {/* New agreed service structure (Lou 2026-08): Deep Clean Reset
+            flagship → Maintenance Plan → wash valets. Replaces the old
+            three-package PricingPlans section (component kept on disk). */}
+        <ServiceMenu />
         <AddOns />
         <Enquiry />
         <ReviewsCarousel />

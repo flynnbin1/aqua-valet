@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { navPages, site, type NavPage } from "../lib/site";
+import { bookHref, navPages, site, type NavPage } from "../lib/site";
 import wordmark from "../../assets/aquavalet-wordmark.png";
 
 const FOCUS =
@@ -180,10 +180,10 @@ export default function Navbar({
               {site.phoneDisplay}
             </a>
             <a
-              href={`${root}book-now/`}
+              href={bookHref(root)}
               className={`hidden min-h-11 items-center rounded-full bg-accent px-5 text-sm font-semibold text-ink transition-colors hover:bg-accent-light sm:flex ${FOCUS}`}
             >
-              Get a Photo Quote
+              Book Now
             </a>
 
             {/* Mobile menu trigger */}
@@ -319,11 +319,11 @@ export default function Navbar({
               Call {site.phoneDisplay}
             </a>
             <a
-              href={`${root}book-now/`}
+              href={bookHref(root)}
               onClick={() => setMenuOpen(false)}
               className={`block rounded-full bg-accent py-3 text-center text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
             >
-              Get a Photo Quote
+              Book Now
             </a>
           </div>
         </div>

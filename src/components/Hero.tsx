@@ -7,7 +7,7 @@ import Lenis from "lenis";
 // otherwise animate Lenis's per-frame scroll writes and turn the smoothing
 // into mush.
 import "lenis/dist/lenis.css";
-import { site } from "../lib/site";
+import { bookHref, site } from "../lib/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -388,10 +388,10 @@ export default function Hero() {
           </div>
           <div className="blur-in mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4 md:mt-9">
             <a
-              href="#book"
+              href={bookHref("")}
               className="rounded-full bg-ink-text px-7 py-3.5 text-center text-base font-medium text-ink ring-2 ring-transparent transition hover:bg-ink hover:text-ink-text hover:ring-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              Get a Photo Quote
+              Book Now
             </a>
             <a
               href="#pricing"

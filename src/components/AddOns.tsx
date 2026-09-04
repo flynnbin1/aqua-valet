@@ -38,15 +38,6 @@ const DropletIcon = () => (
   </svg>
 );
 
-const VanIcon = () => (
-  <svg {...iconProps} className="size-6">
-    <path d="M2.8 15.6V9.3a1 1 0 0 1 1-1h8.4l3.3 3.8h4.7a1 1 0 0 1 1 1v2.5" />
-    <circle cx="7.4" cy="16.8" r="1.8" />
-    <circle cx="16.6" cy="16.8" r="1.8" />
-    <path d="M9.2 16.8h5.6M2.8 16.8h1.8M18.4 16.8h1.9" />
-  </svg>
-);
-
 const SteamIcon = () => (
   <svg {...iconProps} className="size-6">
     <path d="M7 18.5c0-2.6 2-2.6 2-5.2S7 10.7 7 8.1" />
@@ -64,19 +55,12 @@ const SeatIcon = () => (
   </svg>
 );
 
-const EngineIcon = () => (
-  <svg {...iconProps} className="size-6">
-    <rect x="4.4" y="9.2" width="11.2" height="7.2" rx="1.6" />
-    <path d="M15.6 11.4h2.6a1.6 1.6 0 0 1 1.6 1.6v2.6" />
-    <path d="M7.8 9.2V7h4.4v2.2" />
-    <path d="M6.2 16.4v1.7M13.4 16.4v1.7" />
-  </svg>
-);
-
+// The agreed add-on list (Lou 2026-08) — exactly these four. Prices only
+// where she gave one; the rest are priced on condition, never invented.
 const ADD_ONS = [
   {
     title: "Pet & Dog Hair Removal",
-    copy: "Every last hair lifted out of the carpets, boot and upholstery.",
+    copy: "Every last hair lifted out of the carpets, boot and upholstery. From-priced on the car's condition.",
     Icon: PawIcon,
   },
   {
@@ -85,24 +69,14 @@ const ADD_ONS = [
     Icon: DropletIcon,
   },
   {
-    title: "Pickup & Drop-off",
-    copy: "We collect the car and bring it back finished, across Cork city.",
-    Icon: VanIcon,
-  },
-  {
-    title: "Ozone & Steam Treatment",
-    copy: "Deep sanitising that reaches where a cloth and hoover cannot.",
-    Icon: SteamIcon,
-  },
-  {
-    title: "Leather Clean & Condition",
+    title: "Leather Clean & Condition — €60",
     copy: "Cleaned, fed and protected so the seats stay supple, not cracked.",
     Icon: SeatIcon,
   },
   {
-    title: "Engine Bay Clean",
-    copy: "A careful degrease and dress, so it's tidy under the bonnet too.",
-    Icon: EngineIcon,
+    title: "Ozone / Mould Treatment",
+    copy: "Deep sanitising that reaches where a cloth and hoover cannot.",
+    Icon: SteamIcon,
   },
 ];
 
@@ -125,7 +99,9 @@ export default function AddOns() {
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-ink-muted">
             Extras that attach to any package above. Mention what you need when
-            you send your photos and we&rsquo;ll price it in.
+            you send your photos and we&rsquo;ll price it in. All prices are
+            offered From. Final Price may vary depending on the Size &amp;
+            Condition of each vehicle.
           </p>
         </motion.div>
 

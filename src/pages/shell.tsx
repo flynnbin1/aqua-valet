@@ -3,7 +3,7 @@ import { MotionConfig, motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { sectionReveal } from "../components/SectionHeader";
-import { site } from "../lib/site";
+import { bookHref, site } from "../lib/site";
 
 /* Shared shell + section primitives for the Wave 1 subpages
    (sitemap-plan.md). Same design system as the homepage: white page,
@@ -131,7 +131,7 @@ export function Section({
   );
 }
 
-/* Closing CTA band — photo-quote flow, phone fallback. Same Range Rover
+/* Closing CTA band — Book Now first, phone fallback. Same Range Rover
    background + scrim treatment as the homepage's FinalCta so the
    pre-footer banner reads identically sitewide. */
 export function CtaBand({ root }: { root: string }) {
@@ -156,19 +156,19 @@ export function CtaBand({ root }: { root: string }) {
       <div className="relative mx-auto max-w-[1200px] px-6 text-center md:px-10">
         <motion.div {...sectionReveal}>
           <h2 className="font-display text-balance text-3xl font-extrabold tracking-tight md:text-5xl">
-            Quoted before you{" "}
-            <em className="not-italic text-accent">arrive</em>.
+            Ready to <em className="not-italic text-accent">book</em> your car
+            in?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-ink-muted">
-            Send a few details and 3–4 photos on WhatsApp, and you&rsquo;ll
-            know exactly what it&rsquo;ll cost before you drive over.
+            Book the service you think fits — we&rsquo;ll assess your vehicle
+            on arrival and advise if a different one suits better.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <a
-              href={`${root}book-now/`}
+              href={bookHref(root)}
               className={`inline-flex min-h-13 items-center rounded-full bg-accent px-8 py-3.5 text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
             >
-              Get a Photo Quote
+              Book Now
             </a>
             <a
               href={site.phoneHref}

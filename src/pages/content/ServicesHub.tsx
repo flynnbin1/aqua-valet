@@ -39,7 +39,7 @@ export default function ServicesHub({ root }: { root: string }) {
         eyebrow="Aqua Valet — Cork"
         title="Our Services"
         accentWord="Services"
-        intro="Car washing, valeting and deep cleaning at New Park, Centre Park Road — every job quoted from your photos before you arrive."
+        intro="Car washing, valeting and deep cleaning at New Park, Centre Park Road — book the service that fits and we'll assess your vehicle on arrival."
       />
 
       <Section eyebrow="What we do" title="Pick the service, we price the car" accentWord="price">
@@ -77,9 +77,9 @@ export default function ServicesHub({ root }: { root: string }) {
       >
         <motion.div {...sectionReveal} className="mt-6 max-w-3xl">
           <p className="text-base leading-relaxed text-muted">
-            For cars that need bringing back — a full 6–7 hour reset with steam
-            and ozone treatment, pet hair and stain removal, priced on the
-            car&rsquo;s actual condition.
+            Our flagship 6-hour full vehicle reset — steam cleaned, ozone
+            treated, exterior decontaminated. From €199 for a car, from €250
+            for an SUV or jeep, priced on the car&rsquo;s actual condition.
           </p>
           <div className="mt-6 flex flex-wrap gap-4">
             <a
@@ -101,7 +101,7 @@ export default function ServicesHub({ root }: { root: string }) {
       {/* Same enquiry form as the homepage — one shared component,
           one webhook to wire later. Sits before the CTA band, matching
           the homepage flow. */}
-      <Enquiry />
+      <Enquiry root={root} />
 
       <CtaBand root={root} />
     </PageShell>

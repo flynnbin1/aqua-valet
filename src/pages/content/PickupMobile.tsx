@@ -57,15 +57,15 @@ export default function PickupMobile({ root }: { root: string }) {
         <motion.p {...sectionReveal} className="mt-8 max-w-2xl text-base leading-relaxed text-muted">
           Collection and drop-off covers Cork city and the near suburbs. It
           pairs with any package — most collection customers are booking the
-          Full Valet or the Deep Clean Reset. Ask about collection when you
-          send your photos and we&rsquo;ll confirm your area and time.
+          Deep Clean Reset or a Maintenance Clean. Ask about collection when
+          you send your photos and we&rsquo;ll confirm your area and time.
         </motion.p>
       </Section>
 
       {/* Same enquiry form as the homepage — one shared component,
           one webhook to wire later. Sits before the CTA band, matching
           the homepage flow. */}
-      <Enquiry />
+      <Enquiry root={root} />
 
       <CtaBand root={root} />
     </PageShell>

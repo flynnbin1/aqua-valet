@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { sectionReveal } from "./SectionHeader";
 import Star from "./Star";
+import { bookHref } from "../lib/site";
 
 const POINTS = [
   "Carpets, mats and upholstery shampooed and steam-cleaned, not just vacuumed",
@@ -71,10 +72,10 @@ export default function ProfessionalWash() {
           </ul>
 
           <a
-            href="#book"
+            href={bookHref("")}
             className="mt-9 inline-flex min-h-12 items-center rounded-full bg-text-primary px-7 text-base font-medium text-bg ring-2 ring-transparent transition hover:bg-bg hover:text-text-primary hover:ring-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            Get a photo quote
+            Book Now
           </a>
         </motion.div>
       </div>

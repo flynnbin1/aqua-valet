@@ -1,4 +1,4 @@
-import { site } from "../lib/site";
+import { bookHref, site } from "../lib/site";
 
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -10,14 +10,14 @@ const FOCUS =
  * version — see git history / memory notes if that treatment is wanted
  * back; this is deliberately the ONE closing CTA now, not an addition.
  *
- * The primary action re-routes back up to the booking section rather than
- * duplicating the WhatsApp link a third time on the page — the header and
- * the booking section itself both already offer it directly.
+ * The primary action is Book Now (via bookHref/BOOKING_URL, same as the
+ * header) — the photo route lives in the enquiry section above as the
+ * secondary "not sure?" path.
  */
 export default function FinalCta() {
   return (
     <section
-      aria-label="Get your photo quote"
+      aria-label="Book your car in"
       className="relative isolate flex min-h-[26rem] items-center overflow-hidden bg-ink py-24 text-ink-text md:min-h-[32rem] md:py-32"
     >
       <picture>
@@ -42,15 +42,15 @@ export default function FinalCta() {
           Ready when you <em className="not-italic text-accent">are</em>.
         </h2>
         <p className="mx-auto mt-4 max-w-md text-base text-ink-muted">
-          Send a few photos and we&rsquo;ll quote you accurately — no
-          payment, no checkout.
+          Book the service you think fits — we&rsquo;ll assess your vehicle on
+          arrival and advise if a different one suits better.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <a
-            href="#book"
+            href={bookHref("")}
             className={`inline-flex min-h-14 items-center justify-center rounded-full bg-accent px-8 text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
           >
-            Get a photo quote
+            Book Now
           </a>
           {/* Mobile only — a phone is already in hand, so a direct call is
               often faster than scrolling back up to the form. */}

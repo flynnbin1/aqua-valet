@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { motion } from "framer-motion";
 import { sectionReveal } from "./SectionHeader";
-import { lastValeted, site } from "../lib/site";
+import { bookHref, lastValeted, site, surchargeClause } from "../lib/site";
 import { WhatsAppGlyph } from "./icons";
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -48,7 +48,7 @@ const LABEL = "text-sm font-medium text-ink-text";
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-export default function Enquiry() {
+export default function Enquiry({ root = "" }: { root?: string }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -107,24 +107,28 @@ export default function Enquiry() {
             <span className="h-px w-8 bg-stroke" aria-hidden="true" />
           </p>
           <h2 className="font-display mt-4 text-balance text-3xl font-extrabold tracking-tight md:text-5xl">
-            Quoted before you{" "}
-            <em className="not-italic text-accent-strong">arrive</em>.
+            Not sure what your car{" "}
+            <em className="not-italic text-accent-strong">needs</em>?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted">
-            Send us a few details, we&rsquo;ll WhatsApp you to grab a few photos
-            of your car, and you get an accurate price back. No payment, no
-            checkout.
+            Book the service you think fits — we&rsquo;ll assess your vehicle
+            on arrival and advise if a different one suits better. Unsure?
+            Send us photos and we&rsquo;ll point you right.
           </p>
+          {/* Primary path stays visible before the secondary photo route */}
+          <a
+            href={bookHref(root)}
+            className={`mt-7 inline-flex min-h-13 items-center justify-center rounded-full bg-accent px-10 py-3 text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
+          >
+            BOOK NOW
+          </a>
         </motion.div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-12 lg:gap-8">
-          {/* PRIMARY — WhatsApp */}
+          {/* SECONDARY — the photo route for the unsure */}
           <motion.div {...sectionReveal} className="lg:col-span-5">
             <div className="flex h-full flex-col rounded-3xl border border-ink-stroke bg-ink p-8 text-ink-text">
-              <p className="text-xs uppercase tracking-[0.25em] text-accent">
-                Fastest way
-              </p>
-              <h3 className="font-display mt-3 text-2xl font-extrabold leading-tight md:text-3xl">
+              <h3 className="font-display text-2xl font-extrabold leading-tight md:text-3xl">
                 Message us on WhatsApp
               </h3>
               <p className="mt-3 text-base leading-relaxed text-ink-muted">
@@ -293,8 +297,7 @@ export default function Enquiry() {
                         : "Request my photo quote"}
                     </button>
                     <p className="mt-4 text-center text-sm text-ink-muted">
-                      No payment and no checkout — this just starts the
-                      conversation.
+                      This just starts the conversation — no obligation.
                     </p>
                   </form>
                 </>
@@ -302,6 +305,15 @@ export default function Enquiry() {
             </div>
           </motion.div>
         </div>
+
+        {/* Lou's condition-surcharge clause — verbatim, shown at the
+            booking/enquiry step everywhere the form appears. */}
+        <motion.p
+          {...sectionReveal}
+          className="mx-auto mt-8 max-w-3xl rounded-2xl border border-stroke bg-surface p-5 text-center text-sm leading-relaxed text-muted"
+        >
+          {surchargeClause}
+        </motion.p>
       </div>
     </section>
   );

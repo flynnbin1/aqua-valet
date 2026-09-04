@@ -35,10 +35,10 @@ export default function AboutUs({ root }: { root: string }) {
               {site.rating} from {site.reviewCount} Google reviews.
             </p>
             <p className="mt-4 text-base leading-relaxed text-muted">
-              We open {site.openDays.toLowerCase()}, and everything is quoted
-              from your photos before you arrive — so the price is agreed on
-              the car&rsquo;s actual condition, never sprung on you at the
-              unit.
+              We open {site.openDays.toLowerCase()}, and every car is assessed
+              with you on arrival — so the price reflects the car&rsquo;s
+              actual condition, and nothing extra is ever done without your
+              approval.
             </p>
           </motion.div>
           <motion.div {...sectionReveal}>

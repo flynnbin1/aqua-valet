@@ -68,7 +68,7 @@ export default function Contact({ root }: { root: string }) {
                 href={`${root}book-now/`}
                 className={`inline-flex min-h-12 items-center rounded-full bg-accent px-7 text-base font-semibold text-ink transition-colors hover:bg-accent-light ${FOCUS}`}
               >
-                Get a Photo Quote
+                Book Now
               </a>
               <a
                 href={site.whatsappHref}

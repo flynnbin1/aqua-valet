@@ -10,7 +10,7 @@ export const site = {
   whatsappHref:
     "https://wa.me/353834618226?text=Hi%20Aqua%20Valet%2C%20I%27d%20like%20a%20quote%20%E2%80%94%20I%27ll%20send%20a%20few%20photos%20of%20the%20car.",
   email: "info@aquavaletcork.com",
-  openDays: "Wed / Fri / Sat — By Appointment",
+  openDays: "Mon–Sat, 9am–5pm — By Appointment Only",
   // Matches Google exactly — also mirrored in index.html's LocalBusiness
   // aggregateRating. Update both together if the Google figure changes.
   rating: "4.1",
@@ -18,6 +18,124 @@ export const site = {
   facebook: "https://www.facebook.com/aquavaletcork/",
   instagram: "#", // TODO: Instagram link
 };
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BOOKING CTA DESTINATION — one shared constant so repointing every
+   BOOK NOW button at the real booking link later is a ONE-LINE change.
+   Site-root-relative values get the page's depth prefix; a full URL
+   (https://…) is used as-is.
+   ═══════════════════════════════════════════════════════════════════════ */
+export const BOOKING_URL = "book-now/";
+export const bookHref = (root: string) =>
+  BOOKING_URL.startsWith("http") ? BOOKING_URL : `${root}${BOOKING_URL}`;
+
+// Lou's standard lines — verbatim, used wherever they apply.
+export const fromDisclaimer =
+  "All prices are offered From. Final Price may vary depending on the Size & Condition of each vehicle.";
+export const assessNote =
+  "Not sure which service your vehicle needs? Don't worry — we'll assess your vehicle on arrival and advise you if a different service would be more suitable. No additional work will be carried out without your approval.";
+export const surchargeClause =
+  "Our online prices cover standard heavy use. If your vehicle has excessive pet hair, heavy commercial mud, mould, or biohazards, an extra €30–€50 detailing surcharge may apply based on the extra time needed. We will always assess this and confirm it with you face-to-face before we start.";
+export const twoBucketNote =
+  "We use the two bucket method for all of our wash packages & refill these regularly to ensure that the wash mitts, buckets, water and shampoo are clean.";
+export const depositNote =
+  "A €25 booking deposit secures your Deep Clean Reset. Cancellations need 1–2 days' notice or the deposit is forfeited.";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEW SERVICE STRUCTURE — Lou's real prices (2026-08). These are LIVE
+   figures, not placeholders. The old VEHICLE_PRICING below is superseded
+   and kept only because unused legacy components still import it.
+   ═══════════════════════════════════════════════════════════════════════ */
+export const deepCleanReset = {
+  name: "The Deep Clean Reset",
+  strap: "Our Flagship 6-Hour Full Vehicle Reset",
+  positioning:
+    "Your car doesn't have to be this dirty to benefit from a Deep Clean. Our Deep Clean Reset is designed to restore your vehicle and bring it back to its best.",
+  prices: [
+    { label: "Car", price: "from €199" },
+    { label: "SUV & Jeep", price: "from €250" },
+    { label: "Heavy condition or mould", price: "up to €350" },
+  ],
+  ozoneNote:
+    "The ozone machine runs for 1 hour on a standard Deep Clean, and 2 hours where there's mould (the €350 tier).",
+  exterior: [
+    "Pre-wash and safe snow foam",
+    "Wheels and tyres",
+    "Inner arches",
+    "Safe hand wash",
+    "Paint decontamination",
+    "Iron fallout & tar removal",
+    "Door shuts cleaned and polished",
+    "Soft towel dry",
+    "Blow dry",
+    "Tyres dressed",
+  ],
+  interior: [
+    "Full vacuum of carpets, seats and boot",
+    "All surfaces deep cleaned and dressed",
+    "Upholstery shampooed",
+    "Steam cleaned",
+    "Wet-vacuum extracted",
+  ],
+};
+
+// Exclusive to customers who completed a Deep Clean Reset in the last
+// 4–6 weeks — both plans.
+export const maintenancePlan = {
+  exclusiveNote:
+    "Exclusive to customers who have completed a Deep Clean Reset in the last 4–6 weeks.",
+  plans: [
+    {
+      name: "Maintenance Clean",
+      duration: "2–3 hrs",
+      description: "Keep your showroom look alive.",
+      prices: [
+        { label: "Small", price: "€100" },
+        { label: "Medium", price: "€120" },
+        { label: "Estate / SUV", price: "€150" },
+        { label: "7-seater", price: "€175" },
+      ],
+      addOn: "Add-on: Deep Interior Seat Steaming +€60",
+      restriction: null,
+    },
+    {
+      name: "Express Valet",
+      duration: "45–60 min",
+      description: "Strictly for maintained cars only.",
+      prices: [
+        { label: "Small", price: "€80" },
+        { label: "Medium", price: "€100" },
+        { label: "Estate / SUV", price: "€120" },
+        { label: "7-seater", price: "€140" },
+      ],
+      addOn: null,
+      // Lou's note — verbatim.
+      restriction:
+        "Does NOT include stain removal, pet hair extraction, deep carpet vacuuming, or heavy mud cleaning — heavily soiled vehicles will be upgraded to a Deep Clean Reset or rescheduled.",
+    },
+  ],
+};
+
+export const washPackages = [
+  {
+    name: "Maintenance Wash",
+    price: "from €120",
+    includes: [
+      "Hand wash with pH-neutral shampoo",
+      "Tar and sap removal",
+      "Decontaminate paintwork & wheels",
+      "Microfibre towel dry",
+      "Spray wax sealant",
+    ],
+    note: "For vehicles that have not been washed regularly or have tar spots, tree sap, moss, algae etc.",
+  },
+  {
+    name: "Hand Wash, Wax, Towel Dry & Tyre Shine",
+    price: "€25–35",
+    includes: [],
+    note: "For vehicles that are washed regularly and looking to maintain that new car look.",
+  },
+];
 
 // Wave 1 pages — hrefs are site-root-relative WITHOUT the leading slash so
 // each page can prefix its own depth ("" on /, "../" one level down, etc.).
@@ -36,9 +154,9 @@ export const navPages: NavPage[] = [
     label: "Packages",
     href: "packages/",
     children: [
-      { label: "Essential Clean", href: "packages/essential-clean/" },
-      { label: "Full Valet", href: "packages/full-valet/" },
       { label: "The Deep Clean Reset", href: "product/deep-clean-valet/" },
+      { label: "The Maintenance Plan", href: "packages/essential-clean/" },
+      { label: "Wash Valets", href: "services/car-wash/" },
     ],
   },
   {
@@ -222,8 +340,8 @@ export const whyPoints = [
     copy: "No staff, no rushed handovers — the owners do the work on every single car.",
   },
   {
-    title: "Quoted before you arrive",
-    copy: "Photos first, price agreed up front. No surprises at the unit, no awkward extras.",
+    title: "Assessed on arrival",
+    copy: "Book the service you think fits — we'll check the car with you and confirm everything before any work starts.",
   },
   {
     title: "Eight years at Centre Park Road",
@@ -281,7 +399,7 @@ export const faqs = [
   },
   {
     q: "When are you open?",
-    a: "Wednesday, Friday and Saturday, by appointment. We keep three focused days so every booking gets our full attention.",
+    a: "Monday to Saturday, 9am–5pm, by appointment only — so every booking gets our full attention.",
   },
   {
     q: "Where do I find you?",

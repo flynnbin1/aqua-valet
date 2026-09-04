@@ -1,29 +1,57 @@
-import { VEHICLE_PRICING } from "../../lib/site";
-import PackagePage from "./PackagePage";
+import { motion } from "framer-motion";
+import { sectionReveal } from "../../components/SectionHeader";
+import { MaintenancePlanCards } from "../../components/ServiceMenu";
+import Enquiry from "../../components/Enquiry";
+import { maintenancePlan } from "../../lib/site";
+import { CtaBand, PageHero, PageShell, Section } from "../shell";
 
-/* /packages/essential-clean/ — NEW URL (sitemap-plan.md). Maintenance
-   valet, from €150. Prices = VEHICLE_PRICING placeholders. */
+const FOCUS =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+/* /packages/essential-clean/ — URL kept live (sitemap-plan.md: nothing
+   404s), REPURPOSED as The Maintenance Plan page under the new agreed
+   structure (Lou 2026-08). The old "Essential Clean" package this URL was
+   built for maps directly onto the new Maintenance Plan concept ("had
+   your Deep Clean? Keep it that way"), so the URL keeps its meaning. Not
+   a protected old-site URL — the H1 is free to change. */
 export default function EssentialClean({ root }: { root: string }) {
-  const pkg = VEHICLE_PRICING[0]; // Essential Clean
   return (
-    <PackagePage
-      root={root}
-      path="packages/essential-clean/"
-      eyebrow="Packages — Cork"
-      title="Essential Clean"
-      accentWord="Essential"
-      intro="The maintenance valet — a 4–5 week return clean that keeps a deep-cleaned car showroom-fresh."
-      story={[
-        "The Essential Clean exists for one reason: once a car has had a proper deep clean, the cheapest way to keep it that way is a regular return visit before the grime gets established again.",
-        "It's a full interior and exterior refresh — not a quick wash — sized for cars that are already in good order. Most Essential Clean customers are on a four-to-five week cycle with us.",
-        "If your car hasn't been valeted in a while, start with the Full Valet or the Deep Clean Reset instead — this package assumes a recently cleaned baseline.",
-      ]}
-      includes={[...pkg.includes, "Door shuts & sills"]}
-      prices={pkg.prices}
-      crossLinks={[
-        { label: "Full Valet", href: "packages/full-valet/", primary: true },
-        { label: "The Deep Clean Reset", href: "product/deep-clean-valet/" },
-      ]}
-    />
+    <PageShell root={root} path="packages/essential-clean/">
+      <PageHero
+        eyebrow="Packages — Cork"
+        title="The Maintenance Plan"
+        accentWord="Maintenance"
+        intro="Had your Deep Clean? Keep it that way."
+      />
+
+      <Section
+        eyebrow="Who it's for"
+        title="Exclusive to Deep Clean customers"
+        accentWord="Exclusive"
+      >
+        <motion.p
+          {...sectionReveal}
+          className="mt-6 max-w-2xl text-base leading-relaxed text-muted"
+        >
+          {maintenancePlan.exclusiveNote} A freshly reset car is easy to keep
+          that way — these two plans exist so you never need a second Deep
+          Clean.{" "}
+          <a
+            href={`${root}product/deep-clean-valet/`}
+            className={`font-medium text-accent-strong hover:underline ${FOCUS}`}
+          >
+            Not had your Deep Clean Reset yet? Start there →
+          </a>
+        </motion.p>
+        <MaintenancePlanCards root={root} />
+      </Section>
+
+      {/* Same enquiry form as the homepage — one shared component,
+          one webhook to wire later. Sits before the CTA band, matching
+          the homepage flow. */}
+      <Enquiry root={root} />
+
+      <CtaBand root={root} />
+    </PageShell>
   );
 }

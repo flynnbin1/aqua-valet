@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { sectionReveal } from "./SectionHeader";
 import Star from "./Star";
+import { bookHref } from "../lib/site";
 
 // Same locked-off studio frame at both ends of the hero film, so the car's
 // body lines carry straight across the divider.
@@ -58,10 +59,10 @@ export default function BeforeAfterSlider() {
           </ul>
 
           <a
-            href="#book"
+            href={bookHref("")}
             className="mt-9 inline-flex min-h-12 items-center rounded-full bg-accent px-7 text-base font-semibold text-ink transition-colors hover:bg-accent-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            Get a photo quote
+            Book Now
           </a>
         </motion.div>
 

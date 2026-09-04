@@ -96,7 +96,7 @@ export default function PackagePage({
       {/* Same enquiry form as the homepage — one shared component,
           one webhook to wire later. Sits before the CTA band, matching
           the homepage flow. */}
-      <Enquiry />
+      <Enquiry root={root} />
 
       <CtaBand root={root} />
     </PageShell>

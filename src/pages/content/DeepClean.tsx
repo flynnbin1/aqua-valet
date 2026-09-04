@@ -1,23 +1,41 @@
 import { motion } from "framer-motion";
 import { sectionReveal } from "../../components/SectionHeader";
 import Star from "../../components/Star";
-import { VEHICLE_PRICING, cardCaveat, faqs } from "../../lib/site";
-import { CtaBand, PageHero, PageShell, PriceTable, Section } from "../shell";
+import { BookCta } from "../../components/ServiceMenu";
 import Enquiry from "../../components/Enquiry";
-
-const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+import {
+  deepCleanReset,
+  depositNote,
+  fromDisclaimer,
+} from "../../lib/site";
+import { CtaBand, PageHero, PageShell, Section } from "../shell";
 
 /* /product/deep-clean-valet/ — KEEP URL EXACTLY (sitemap-plan.md). This
-   page already ranks #1 for "car deep clean cork". Old H1 "Deep Clean
-   Valet 6-7 hrs" kept verbatim; content upgraded around it. Prices are
-   the VEHICLE_PRICING placeholders; the €200–€450 condition band comes
-   from the build brief. */
-const deepClean = VEHICLE_PRICING[2];
+   page ranks #1 for "car deep clean cork": the H1 "Deep Clean Valet
+   6-7 hrs" stays verbatim; Lou's strap "Our Flagship 6-Hour Full Vehicle
+   Reset" leads the content beneath it. All copy, lists and prices on
+   this page are Lou's supplied 2026-08 content (src/lib/site.ts →
+   deepCleanReset) — real figures, not placeholders. */
 
-const PAGE_FAQS = faqs.filter((f) =>
-  ["How long does a deep clean take?", "Do you remove dog hair?", "Why do you ask for photos first?"].includes(f.q),
-);
+// The three FAQ questions Lou wrote answers for. Her answer text hasn't
+// been supplied yet — the two answers below are assembled ONLY from lines
+// in the agreed spec (the 6-hour/ozone facts and her positioning line);
+// the first is a clearly-marked placeholder awaiting her copy.
+const FAQS: { q: string; a: string; pending?: boolean }[] = [
+  {
+    q: "Is this a full valet?",
+    a: "Lou's answer to come — copy being supplied.",
+    pending: true,
+  },
+  {
+    q: "How long does it take?",
+    a: `A full six hours. ${deepCleanReset.ozoneNote}`,
+  },
+  {
+    q: "How do I know if I need one?",
+    a: deepCleanReset.positioning,
+  },
+];
 
 export default function DeepClean({ root }: { root: string }) {
   return (
@@ -26,18 +44,29 @@ export default function DeepClean({ root }: { root: string }) {
         eyebrow="The flagship — Cork"
         title="Deep Clean Valet 6-7 hrs"
         accentWord="Deep Clean"
-        intro="Our specialty: a full-day reset for cars that need bringing back. Steam and ozone treatment, pet hair and stain removal, priced on the car's actual condition — from €200, up to €450 for a heavily soiled 7-seater."
+        intro={`${deepCleanReset.strap}. From €199 for a car, from €250 for an SUV or jeep, up to €350 for heavy condition or mould.`}
       />
 
-      <Section eyebrow="What's included" title="A reset, not a valet" accentWord="reset">
+      {/* Lou's positioning line — prominent, verbatim */}
+      <section className="bg-surface py-10 md:py-14">
+        <div className="mx-auto max-w-[1200px] px-6 md:px-10">
+          <motion.p
+            {...sectionReveal}
+            className="font-display mx-auto max-w-3xl text-balance text-center text-xl font-bold leading-relaxed text-text-primary md:text-2xl"
+          >
+            &ldquo;{deepCleanReset.positioning}&rdquo;
+          </motion.p>
+        </div>
+      </section>
+
+      <Section eyebrow="What's included" title="Exterior and interior, in full" accentWord="in full">
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           <motion.div {...sectionReveal}>
-            <ul className="space-y-3">
-              {[
-                ...deepClean.includes,
-                "Pet hair & stain removal",
-                "Interior detailing — dash, console & trim",
-              ].map((item) => (
+            <h3 className="font-display text-lg font-bold uppercase tracking-wide">
+              Exterior
+            </h3>
+            <ul className="mt-4 space-y-2.5">
+              {deepCleanReset.exterior.map((item) => (
                 <li key={item} className="flex gap-3 text-base text-text-primary">
                   <Star className="mt-1.5 size-3 shrink-0 text-accent-strong" />
                   <span>{item}</span>
@@ -46,18 +75,19 @@ export default function DeepClean({ root }: { root: string }) {
             </ul>
           </motion.div>
           <motion.div {...sectionReveal}>
-            <p className="text-base leading-relaxed text-muted">
-              A deep clean here is a six-to-seven hour job, and we only take a
-              couple of them a day — deliberately. Both of us work on every
-              car, and the ozone and steam stages can&rsquo;t be rushed
-              without cutting corners.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-muted">
-              It&rsquo;s the right call for cars that have gone years without
-              proper attention: ingrained grime, pet hair through the carpets,
-              odours that a normal valet won&rsquo;t shift. That&rsquo;s also
-              why it&rsquo;s priced on condition — a lightly-lived-in saloon
-              and a heavily soiled 7-seater are not the same job.
+            <h3 className="font-display text-lg font-bold uppercase tracking-wide">
+              Interior
+            </h3>
+            <ul className="mt-4 space-y-2.5">
+              {deepCleanReset.interior.map((item) => (
+                <li key={item} className="flex gap-3 text-base text-text-primary">
+                  <Star className="mt-1.5 size-3 shrink-0 text-accent-strong" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 rounded-2xl border border-stroke bg-surface p-5 text-sm leading-relaxed text-muted">
+              {deepCleanReset.ozoneNote}
             </p>
           </motion.div>
         </div>
@@ -94,30 +124,39 @@ export default function DeepClean({ root }: { root: string }) {
             </motion.figure>
           ))}
         </div>
-        <motion.p {...sectionReveal} className="mt-6 text-sm text-muted">
-          Real cars from the unit — more in{" "}
-          <a href={`${root}valeting-work/`} className={`font-medium text-accent-strong hover:underline ${FOCUS}`}>
-            our recent work
-          </a>
-          .
-        </motion.p>
       </Section>
 
-      <Section eyebrow="Pricing" title="Priced on condition, quoted from photos" accentWord="condition">
+      <Section eyebrow="Pricing" title="Priced on your car's condition" accentWord="condition">
         <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-start">
           <motion.div {...sectionReveal}>
-            <PriceTable prices={deepClean.prices} />
-            <p className="mt-4 text-sm text-muted">
-              {cardCaveat} Heavily soiled interiors run higher — up to €450 for
-              a 7-seater in a bad way. Your photos set the exact price before
-              you commit to anything.
+            <ul className="divide-y divide-stroke rounded-2xl border border-stroke">
+              {deepCleanReset.prices.map((r) => (
+                <li key={r.label} className="flex items-center justify-between px-5 py-4">
+                  <span className="text-base text-muted">{r.label}</span>
+                  <span className="font-display text-xl font-extrabold">{r.price}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm text-muted">{fromDisclaimer}</p>
+            <p className="mt-3 rounded-xl border border-stroke bg-surface p-4 text-sm leading-relaxed text-muted">
+              {depositNote}
             </p>
+            <BookCta root={root} />
           </motion.div>
           <motion.div {...sectionReveal} className="space-y-4">
-            {PAGE_FAQS.map((f) => (
-              <div key={f.q} className="rounded-2xl border border-stroke bg-surface p-6">
+            {FAQS.map((f) => (
+              <div
+                key={f.q}
+                className={`rounded-2xl border p-6 ${
+                  f.pending
+                    ? "border-2 border-dashed border-stroke bg-bg"
+                    : "border-stroke bg-surface"
+                }`}
+              >
                 <h3 className="font-display text-base font-bold">{f.q}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>
+                <p className={`mt-2 text-sm leading-relaxed ${f.pending ? "italic text-muted" : "text-muted"}`}>
+                  {f.a}
+                </p>
               </div>
             ))}
           </motion.div>
@@ -127,7 +166,7 @@ export default function DeepClean({ root }: { root: string }) {
       {/* Same enquiry form as the homepage — one shared component,
           one webhook to wire later. Sits before the CTA band, matching
           the homepage flow. */}
-      <Enquiry />
+      <Enquiry root={root} />
 
       <CtaBand root={root} />
     </PageShell>

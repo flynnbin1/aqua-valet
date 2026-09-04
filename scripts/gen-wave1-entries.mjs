@@ -11,7 +11,7 @@ const PAGES = [
     component: "ServicesHub",
     title: "Services | Car Wash, Valeting & Detailing | Aqua Valet Cork",
     description:
-      "Car washing, valeting and deep cleaning at New Park, Centre Park Road, Cork. Every job quoted from your photos before you arrive.",
+      "Car washing, valeting and deep cleaning at New Park, Centre Park Road, Cork. Book the service that fits — we assess your vehicle on arrival.",
     schema: { type: "Service", name: "Car Valeting & Detailing Services" },
   },
   {
@@ -43,24 +43,24 @@ const PAGES = [
     component: "PackagesHub",
     title: "Valeting Packages & Prices | Aqua Valet Cork",
     description:
-      "Three valeting packages, honestly priced on your car's size and condition — Essential Clean, Full Valet and the Deep Clean Reset. Photo-quoted before you arrive.",
+      "The Deep Clean Reset, the Maintenance Plan that keeps it that way, and our wash valets — honestly priced on your car's size and condition.",
     schema: null,
   },
   {
     url: "packages/essential-clean/",
     component: "EssentialClean",
-    title: "Essential Clean | Maintenance Valet from €150 | Aqua Valet Cork",
+    title: "The Maintenance Plan | Keep Your Deep Clean | Aqua Valet Cork",
     description:
-      "The maintenance valet — a 4–5 week return clean that keeps a deep-cleaned car showroom-fresh. From €150, quoted from your photos.",
-    schema: { type: "Service", name: "Essential Clean Maintenance Valet" },
+      "Had your Deep Clean? Keep it that way. The Maintenance Clean from €100 and the Express Valet from €80 — exclusive to customers who completed a Deep Clean Reset in the last 4–6 weeks.",
+    schema: { type: "Service", name: "The Maintenance Plan" },
   },
   {
     url: "packages/full-valet/",
     component: "FullValet",
-    title: "Full Valet | Interior & Exterior from €120 | Aqua Valet Cork",
+    title: "Full Valet | Aqua Valet Cork",
     description:
-      "A complete interior and exterior valet, done properly — from €120, or from €150 for SUVs and jeeps. The right starting point for most cars in Cork.",
-    schema: { type: "Service", name: "Full Valet" },
+      "Our packages have a new shape — the Full Valet's work now lives across the Deep Clean Reset and the Maintenance Plan, priced on your car's size and condition.",
+    schema: null,
   },
   {
     url: "product/deep-clean-valet/",
@@ -68,7 +68,7 @@ const PAGES = [
     // KEEP EXACTLY — this title ranks #1 for "car deep clean cork"
     title: "Deep Clean Valet 6-7 hrs - Aqua Valet Cork",
     description:
-      "Our flagship deep clean valet in Cork — a full 6-7 hour reset with steam and ozone treatment, pet hair and stain removal. From €200, priced on your car's actual condition.",
+      "Our Flagship 6-Hour Full Vehicle Reset — steam cleaned, wet-vac extracted, ozone treated, exterior decontaminated. From €199 for a car, from €250 for an SUV, priced on condition.",
     schema: { type: "Service", name: "Deep Clean Valet" },
   },
   {
@@ -76,7 +76,7 @@ const PAGES = [
     component: "AboutUs",
     title: "About Us | Car Cleaning Service | Aqua Valet Cork",
     description:
-      "Eight years of car valeting and cleaning at New Park, Centre Park Road, Cork — still just the two of us, on every single car. Open Wednesday, Friday and Saturday.",
+      "Eight years of car valeting and cleaning at New Park, Centre Park Road, Cork — still just the two of us, on every single car. Open Monday to Saturday, 9am–5pm, by appointment.",
     schema: null,
   },
   {
@@ -84,15 +84,15 @@ const PAGES = [
     component: "Contact",
     title: "Contact | Car Valet on New Park, Centre Park Road | Aqua Valet Cork",
     description:
-      "Get in touch to book a valeting service in Cork. Open Wednesday, Friday and Saturday, by appointment, at New Park, Centre Park Road — opposite the Marina Market.",
+      "Get in touch to book a valeting service in Cork. Open Monday to Saturday, 9am–5pm, by appointment, at New Park, Centre Park Road — opposite the Marina Market.",
     schema: { type: "LocalBusiness" },
   },
   {
     url: "book-now/",
     component: "BookNow",
-    title: "Book Now | Car Valeting Quotes in Cork | Aqua Valet Cork",
+    title: "Book Now | Car Valeting in Cork | Aqua Valet Cork",
     description:
-      "Book a car valet in Cork — leave your details, we WhatsApp you for 3–4 photos of your car, and you get an exact price before you drive over. No payment, no checkout.",
+      "Book your car valet in Cork — a €25 deposit secures your slot and we assess your vehicle on arrival. Not sure what it needs? Send us photos and we'll point you right.",
     schema: null,
   },
   {
@@ -133,7 +133,7 @@ function schemaFor(page) {
   if (!page.schema) return "";
   const obj =
     page.schema.type === "LocalBusiness"
-      ? { "@context": "https://schema.org", ...LOCAL_BUSINESS, openingHours: ["We 09:00-18:00", "Fr 09:00-18:00", "Sa 09:00-18:00"] }
+      ? { "@context": "https://schema.org", ...LOCAL_BUSINESS, openingHours: ["Mo-Sa 09:00-17:00"] }
       : {
           "@context": "https://schema.org",
           "@type": "Service",
